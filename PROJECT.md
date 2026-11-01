@@ -2,7 +2,7 @@
 
 ## Project Definition
 
-Recipe Manager is a bilingual public recipe website built with WordPress.
+Recipe Manager is a public recipe website built with WordPress. The MVP will launch in one content language; English/Spanish content support is deferred.
 
 The website presents a curated collection of recipes published by a single author, similar to a personal chef or cooking website. Visitors can browse, search, filter, read, scale, convert, and print recipes through a polished and responsive interface.
 
@@ -16,26 +16,26 @@ The administrative experience does not need to be highly customized because reci
 
 The project has two primary goals:
 
-1. Create a useful and polished website for publishing personal recipes.  
+1. Create a useful and polished website for publishing personal recipes.
 2. Demonstrate practical WordPress development skills suitable for real-world freelance projects.
 
 The project should demonstrate skills including:
 
-- Custom WordPress theme development  
-- Custom Post Types  
-- Advanced Custom Fields (ACF)  
-- Structured content modeling  
-- Responsive frontend development  
-- WordPress search and filtering  
-- Dynamic frontend interactions  
-- Multilingual content  
-- Recipe measurement conversion  
-- Recipe serving scaling  
-- Print-friendly layouts  
-- Elementor integration  
+- Custom WordPress theme development
+- Custom Post Types
+- Advanced Custom Fields (ACF)
+- Structured content modeling
+- Responsive frontend development
+- WordPress search and filtering
+- Dynamic frontend interactions
+- Translation-ready theme and plugin interface strings
+- Recipe measurement conversion
+- Recipe serving scaling
+- Print-friendly layouts
+- Elementor integration
 - WordPress taxonomy management
 
-The project should prioritize maintainability and development speed rather than implementing functionality from scratch when WordPress, Elementor, ACF, or another appropriate solution already handles it well.
+The project should prioritize maintainability and development speed, using WordPress and suitable free plugins where they solve a problem well. All required plugins and extensions must be free. The site will not be monetized, so the implementation must not depend on premium licenses, paid services, or paid feature upgrades.
 
 ---
 
@@ -51,25 +51,24 @@ Visitors do not need accounts and cannot submit or modify content.
 
 V1 will include:
 
-- Public recipe website  
-- Custom Recipe post type  
-- Structured recipe data using ACF  
-- English and Spanish recipe content  
-- Language switching between English and Spanish  
-- Recipe categories  
-- Recipe tags  
-- Recipe search  
-- Recipe filtering  
-- Featured recipes  
-- Related recipes  
-- Ingredient serving scaling  
-- Mass/volume measurement switching  
-- Numbered recipe instructions  
-- Optional images for instruction steps  
-- Recipe notes and tips  
-- Print-friendly recipe pages  
-- Responsive design  
-- Custom WordPress theme  
+- Public recipe website
+- Custom Recipe post type
+- Structured recipe data using ACF
+- Recipe content in one language for the MVP
+- Recipe categories
+- Recipe tags
+- Recipe search
+- Recipe filtering
+- Featured recipes
+- Related recipes
+- Ingredient serving scaling
+- Mass/volume measurement switching
+- Numbered recipe instructions
+- Optional images for instruction steps
+- Recipe notes and tips
+- Print-friendly recipe pages
+- Responsive design
+- Custom WordPress theme
 - Selective Elementor integration
 
 ---
@@ -78,18 +77,21 @@ V1 will include:
 
 The following features are intentionally excluded from V1:
 
-- User registration  
-- User profiles  
-- User-submitted recipes  
-- Recipe editing by visitors  
-- Favorites or saved recipes  
-- Ratings  
-- Reviews  
-- Comments  
-- Meal planning  
-- Shopping lists  
-- Nutrition calculations  
-- Social features  
+- Bilingual recipe content and visitor language switching (deferred)
+- Custom multilingual infrastructure
+
+- User registration
+- User profiles
+- User-submitted recipes
+- Recipe editing by visitors
+- Favorites or saved recipes
+- Ratings
+- Reviews
+- Comments
+- Meal planning
+- Shopping lists
+- Nutrition calculations
+- Social features
 - Mobile applications
 
 These features may be considered for future versions but should not influence the architecture beyond avoiding decisions that would make reasonable future expansion unnecessarily difficult.
@@ -120,7 +122,7 @@ Example:
 
 A short introduction or description of the recipe.
 
-This content should be available in both English and Spanish.
+This content will be authored in the selected MVP language. Translated versions are deferred.
 
 ### Featured Image
 
@@ -154,15 +156,15 @@ The original recipe data must not be modified by this interaction.
 
 Each recipe should contain:
 
-- Preparation time  
+- Preparation time
 - Cooking time
 
 The frontend may calculate and display total time automatically.
 
 Example:
 
-Preparation: 15 minutes  
-Cooking: 30 minutes  
+Preparation: 15 minutes
+Cooking: 30 minutes
 Total: 45 minutes
 
 ---
@@ -173,8 +175,8 @@ Ingredients must use structured data rather than a single text field.
 
 Each ingredient should contain at minimum:
 
-- Ingredient name  
-- Quantity  
+- Ingredient name
+- Quantity
 - Measurement unit
 
 Example:
@@ -187,20 +189,53 @@ Example:
 
 This structure is necessary to support serving scaling and measurement conversion.
 
+## Ingredient Entry and Unit Catalog
+
+Ingredient names are free text, entered directly when editing a recipe. The
+author does not need to create or select an ingredient from a separate catalog.
+Ingredient presets, suggested units, and ingredient-specific unit restrictions
+are not part of the MVP.
+
+Measurement units must be selected from a predefined catalog maintained in the
+core plugin. Store stable unit codes separately from their display labels and
+group units by measurement type:
+
+| Type | Example units |
+| :---- | :---- |
+| Mass | g, kg |
+| Volume | ml, l, tsp, tbsp, cup |
+| Count | piece, clove, slice |
+| Informal | pinch, handful |
+
+The author can select any supported unit for any ingredient. Do not infer unit
+restrictions or conversion factors from a free-text ingredient name. Define
+the volume represented by each supported spoon/cup unit explicitly so
+conversions are consistent.
+
+Store ingredient rows in their authored order as structured recipe post
+metadata. Each row contains a free-text name, a separate validated decimal
+quantity, a unit code, and optional preparation notes and group label. Allow
+an absent quantity and unit for entries such as “salt to taste”; keep “to taste”
+in the notes rather than the numeric quantity field.
+
+Serving adjustments use the original quantity multiplied by desired servings
+divided by default servings. Recalculate from the original value and round only
+for display. Entries without numeric quantities remain unchanged.
+
 Ingredients may optionally be organized into groups when useful.
 
 Example:
 
 **For the chicken**
 
-- Chicken breast  
-- Salt  
+- Chicken breast
+- Salt
 - Pepper
 
 **For the sauce**
 
-- Milk  
-- Jalapeño  
+- Milk
+- Jalapeño
 - Garlic
 
 ---
@@ -209,17 +244,17 @@ Example:
 
 Where appropriate, visitors should be able to switch ingredient measurements between:
 
-- Mass measurements  
+- Mass measurements
 - Volumetric measurements
 
 Examples include conversions between measurements such as:
 
-- grams  
-- kilograms  
-- milliliters  
-- liters  
-- teaspoons  
-- tablespoons  
+- grams
+- kilograms
+- milliliters
+- liters
+- teaspoons
+- tablespoons
 - cups
 
 Conversions should preserve reasonable cooking precision.
@@ -238,16 +273,16 @@ Recipe instructions should consist of ordered steps.
 
 Each step contains:
 
-- Step number/order  
-- Instruction text  
+- Step number/order
+- Instruction text
 - Optional image
 
 Example:
 
-1. Cut the chicken into bite-sized pieces.  
-2. Season the chicken.  
-3. Heat a pan over medium-high heat.  
-4. Cook the chicken until browned.  
+1. Cut the chicken into bite-sized pieces.
+2. Season the chicken.
+3. Heat a pan over medium-high heat.
+4. Cook the chicken until browned.
 5. Prepare the sauce.
 
 Instruction images are optional.
@@ -260,11 +295,11 @@ Recipes can contain a notes/tips section.
 
 This can be used for information such as:
 
-- Ingredient substitutions  
-- Storage recommendations  
-- Cooking tips  
-- Serving suggestions  
-- Lessons learned while preparing the recipe  
+- Ingredient substitutions
+- Storage recommendations
+- Cooking tips
+- Serving suggestions
+- Lessons learned while preparing the recipe
 - Additional context that does not belong in the instructions
 
 ---
@@ -275,13 +310,13 @@ Recipes will primarily be organized using broad food or main-ingredient categori
 
 Examples:
 
-- Chicken  
-- Beef  
-- Pork  
-- Fish  
-- Pasta  
-- Rice  
-- Soups  
+- Chicken
+- Beef
+- Pork
+- Fish
+- Pasta
+- Rice
+- Soups
 - Desserts
 
 A recipe may belong to one or more categories where appropriate.
@@ -294,33 +329,37 @@ Tags provide additional flexible classification.
 
 Examples:
 
-- Quick  
-- Spicy  
-- Cheap  
-- High-protein  
-- Nicaraguan  
-- One-pan  
-- Oven  
+- Quick
+- Spicy
+- Cheap
+- High-protein
+- Nicaraguan
+- One-pan
+- Oven
 - Comfort food
 
 Tags should complement rather than duplicate the primary categories.
 
 ---
 
-# Multilingual Content
+# Language Strategy
 
-The website will support:
+The MVP will publish recipes and general website content in one language,
+chosen by the site owner before content entry. English/Spanish content and
+visitor language switching are deferred until the core recipe experience is complete.
 
-- English  
-- Spanish
+Theme and plugin interface strings must use standard WordPress translation
+functions and consistent text domains. Avoid hard-coded assumptions that would
+make later translation unnecessarily difficult.
 
-The author will provide both versions of recipe content.
+Do not build a custom language routing system or duplicate English/Spanish
+fields for every recipe in the MVP. Before adding bilingual content, evaluate
+a free multilingual plugin and verify compatibility with the custom recipe
+metadata, taxonomies, and static pages. A paid multilingual integration must
+not become a requirement.
 
-Visitors should be able to switch between languages.
-
-The language system should apply to both general website content and recipe content.
-
-The website should not depend on automatic machine translation for recipe content.
+Future translated recipe content will be authored by the owner; automatic
+machine translation is not a requirement.
 
 ---
 
@@ -330,10 +369,10 @@ Visitors should be able to search the recipe collection.
 
 Search should make it easy to discover recipes based on relevant recipe information such as:
 
-- Recipe title  
-- Description  
-- Ingredients  
-- Categories  
+- Recipe title
+- Description
+- Ingredients
+- Categories
 - Tags
 
 ---
@@ -344,9 +383,9 @@ The recipe archive should provide filters that help visitors narrow the recipe c
 
 Filtering may include:
 
-- Category  
-- Ingredient  
-- Tags  
+- Category
+- Ingredient
+- Tags
 - Cooking/preparation time where practical
 
 Difficulty filtering is explicitly excluded.
@@ -371,19 +410,19 @@ Recipe pages should provide a Print Recipe action.
 
 The print layout should remove unnecessary website elements such as:
 
-- Navigation  
-- Footer  
-- Related recipes  
-- Decorative UI  
+- Navigation
+- Footer
+- Related recipes
+- Decorative UI
 - Unnecessary images
 
 The printed version should focus on:
 
-- Recipe title  
-- Servings  
-- Times  
-- Ingredients  
-- Instructions  
+- Recipe title
+- Servings
+- Times
+- Ingredients
+- Instructions
 - Notes
 
 ---
@@ -392,18 +431,17 @@ The printed version should focus on:
 
 A typical visitor journey is:
 
-1. Visitor arrives on the homepage.  
-2. Visitor sees featured recipes and a prominent recipe search.  
-3. Visitor searches for a recipe or browses the recipe collection.  
-4. Visitor optionally filters recipes.  
-5. Visitor selects a recipe.  
-6. Visitor reads the recipe.  
-7. Visitor optionally switches between English and Spanish.  
-8. Visitor adjusts the number of servings.  
-9. Ingredient quantities update automatically.  
-10. Visitor optionally changes the displayed measurement system.  
-11. Visitor follows the recipe instructions.  
-12. Visitor may print the recipe or explore a related recipe.
+1. Visitor arrives on the homepage.
+2. Visitor sees featured recipes and a prominent recipe search.
+3. Visitor searches for a recipe or browses the recipe collection.
+4. Visitor optionally filters recipes.
+5. Visitor selects a recipe.
+6. Visitor reads the recipe.
+7. Visitor adjusts the number of servings.
+8. Ingredient quantities update automatically.
+9. Visitor optionally changes the displayed measurement system.
+10. Visitor follows the recipe instructions.
+11. Visitor may print the recipe or explore a related recipe.
 
 No authentication should be required at any point.
 
@@ -417,7 +455,7 @@ The homepage should emphasize recipe discovery.
 
 Primary content:
 
-- Search bar  
+- Search bar
 - Featured recipes
 
 Additional sections can be introduced as the collection grows, but the initial homepage should remain focused and uncluttered.
@@ -430,9 +468,9 @@ Displays the complete recipe collection.
 
 Should support:
 
-- Search  
-- Filtering  
-- Recipe cards  
+- Search
+- Filtering
+- Recipe cards
 - Pagination when necessary
 
 ---
@@ -443,22 +481,22 @@ The primary content page of the website.
 
 Should display:
 
-- Featured image  
-- Recipe title  
-- Description  
-- Preparation time  
-- Cooking time  
-- Total time  
-- Servings  
-- Serving adjustment controls  
-- Measurement conversion controls  
-- Ingredients  
-- Instructions  
-- Instruction images  
-- Notes/tips  
-- Categories  
-- Tags  
-- Print Recipe action  
+- Featured image
+- Recipe title
+- Description
+- Preparation time
+- Cooking time
+- Total time
+- Servings
+- Serving adjustment controls
+- Measurement conversion controls
+- Ingredients
+- Instructions
+- Instruction images
+- Notes/tips
+- Categories
+- Tags
+- Print Recipe action
 - Related recipes
 
 ---
@@ -495,13 +533,13 @@ This page can be created using Elementor rather than requiring a custom template
 
 The project will use a lightweight custom WordPress theme.
 
-The theme should be responsible for functionality and presentation where custom development provides meaningful value, particularly:
+The theme should be responsible for presentation and browser interactions where custom development provides meaningful value, particularly:
 
-- Recipe templates  
-- Recipe archive  
-- Recipe cards  
-- Recipe-specific frontend interactions  
-- Responsive styling  
+- Recipe templates
+- Recipe archive
+- Recipe cards
+- Recipe-specific frontend interactions
+- Responsive styling
 - Integration with WordPress content and taxonomies
 
 The theme should not recreate functionality already solved well by WordPress or established plugins without a clear reason.
@@ -514,8 +552,8 @@ Elementor may be used alongside the custom theme.
 
 It is primarily intended for pages where visual content editing is more valuable than custom development, such as:
 
-- Homepage  
-- About page  
+- Homepage
+- About page
 - Other future marketing/static pages
 
 Recipe functionality should remain based on structured WordPress data rather than being manually constructed using Elementor for every recipe.
@@ -530,14 +568,129 @@ ACF will be used to manage structured recipe information.
 
 Likely field groups include:
 
-- Recipe information  
-- Times  
-- Servings  
-- Ingredients  
-- Instruction steps  
+- Recipe information
+- Times
+- Servings
+- Ingredients
+- Instruction steps
 - Notes
 
-Repeatable structures such as ingredients and instruction steps should use appropriate repeatable fields where available.
+Use **ACF Free** for basic fields such as description, default servings,
+preparation time, cooking time, featured status, and notes. Use native WordPress
+fields for the title and featured image. Keep field definitions in version
+control, using PHP registration in the core plugin or another deliberately
+managed export workflow.
+
+ACF Free does not include the Repeater field. Ingredients and instruction
+steps will therefore use custom repeatable admin fields supplied by the core
+plugin. Do not depend on ACF Pro or paid repeater add-ons.
+
+The custom editor should provide simple Add, Remove, and ordering controls.
+Ingredients must preserve separate quantity, unit, and name values, with an
+optional group label. Steps must preserve their order, instruction text, and
+an optional WordPress media attachment ID. Store these collections as
+structured post metadata rather than presentation HTML.
+
+Keep the editor practical for a single author. Validate and sanitize saved
+values, check permissions and nonces, handle autosaves/revisions deliberately,
+and escape values when rendering them.
+
+---
+
+# Free Plugin Policy
+
+All required third-party plugins must be usable in their free editions for the
+features this project needs. Additional implementation work is acceptable when
+it avoids a paid dependency. No premium license should be needed to install,
+run, or reproduce the MVP.
+
+| Component | Choice | Responsibility |
+| :---- | :---- | :---- |
+| Structured basic fields | ACF Free | Standard recipe editing fields |
+| Static page builder | Elementor Free, optional | About and optionally Home |
+| Recipe functionality | Custom Recipe Manager Core plugin | Content model, repeatable fields, reusable logic |
+| Public presentation | Custom Recipe Manager theme | Templates, styles, browser controls |
+| Multilingual plugin | Deferred | Reassess free options after the MVP |
+
+Do not add a separate CPT registration plugin, paid recipe plugin, ACF Pro,
+or a paid multilingual integration. Evaluate extra plugins only when a
+concrete requirement justifies them; avoid overlapping responsibilities.
+
+# Custom Development Responsibilities
+
+## Recipe Manager Core Plugin
+
+The `plugins/recipe-manager-core/` plugin owns the content model independently
+of the active theme:
+
+- Register the Recipe custom post type and recipe category/tag taxonomies.
+- Register the basic ACF fields and provide repeatable ingredient/step editors.
+- Save and validate structured recipe metadata.
+- Own reusable unit definitions, conversion rules, and supported ingredient
+  density data.
+- Provide recipe-specific query/search integration where required.
+
+Changing themes must not remove registration of the recipe content model.
+The theme reads this data and presents it; it does not register the post type.
+
+## Recipe Manager Theme
+
+The `themes/recipe-manager/` theme owns:
+
+- Recipe single pages, archives, cards, navigation, and responsive styling.
+- Search/filter forms and pagination.
+- Serving controls and browser-side quantity updates.
+- Measurement controls using supported conversion data from the core plugin.
+- Related recipe presentation and a print stylesheet/button.
+- Compatibility with normal WordPress page content and optional Elementor pages.
+
+Use a small amount of JavaScript for interactive controls. Render readable
+original quantities and instructions on the server so recipes remain usable
+without JavaScript. Browser interactions must not modify stored recipe data.
+
+## Search and Filtering Approach
+
+Start with normal WordPress requests, query APIs, and server-rendered forms.
+Taxonomy filters and pagination should work without JavaScript. Search must
+explicitly account for relevant recipe metadata and taxonomy terms where
+needed; default WordPress search does not automatically search ACF fields or
+custom ingredient collections.
+
+Begin with a straightforward implementation suitable for a small collection.
+Avoid a custom search service or extra filtering plugin unless measured needs
+justify one. Optional time filters and richer ingredient filtering may follow
+the essential search/category/tag experience.
+
+## Measurement Approach
+
+Implement serving scaling from immutable original quantities. Define a small,
+explicit set of supported units and conversions. Same-dimension conversions
+such as grams to kilograms use known factors. Mass-to-volume conversion
+requires reliable ingredient-specific density data; leave an ingredient in its
+original unit when that data is unavailable. Display sensible cooking precision
+and preserve nonnumeric quantities such as “to taste” without scaling them.
+
+The unit catalog alone does not provide ingredient density. With free-text
+ingredient names and no ingredient catalog in the MVP, do not infer density
+from names or promise arbitrary mass-to-volume conversion. Such conversions
+remain unavailable unless reliable ingredient-specific data is explicitly
+provided; serving scaling and supported same-dimension conversions work
+independently of that data.
+
+# Implementation Sequence
+
+1. Build the core plugin and register the Recipe post type and taxonomies.
+2. Define ACF Free fields and custom ingredient/instruction editors.
+3. Publish a representative recipe and build an accessible, responsive recipe page.
+4. Add serving scaling, supported conversions, and print styles.
+5. Build the archive, search, filters, and simple related recipe queries.
+6. Complete Home/About, optionally using Elementor Free, and featured recipes.
+7. Verify the complete visitor journey and owner publishing workflow.
+
+Use representative content to check missing images, optional notes, ingredient
+groups, fractional quantities, unsupported conversions, and long instructions.
+Check mobile layouts, keyboard controls, printing, and the experience without
+JavaScript. Keep the MVP in one content language throughout this sequence.
 
 ---
 
@@ -587,20 +740,19 @@ Future ideas should be documented rather than added to the V1 scope.
 
 # Definition of V1 Complete
 
-V1 is complete when the site owner can publish structured recipes in English and Spanish and a visitor can:
+V1 is complete when the site owner can publish structured recipes in the selected content language using only free dependencies and a visitor can:
 
-1. Discover recipes through the homepage.  
-2. Browse all recipes.  
-3. Search recipes.  
-4. Filter recipes.  
-5. Open and read a polished recipe page.  
-6. Switch between English and Spanish.  
-7. Adjust the number of servings.  
-8. See ingredient quantities scale accordingly.  
-9. Switch supported ingredient measurements between mass and volume.  
-10. View instruction steps and optional step images.  
-11. Read recipe notes.  
-12. Print a clean version of the recipe.  
-13. Navigate to related recipes.
+1. Discover recipes through the homepage.
+2. Browse all recipes.
+3. Search recipes.
+4. Filter recipes.
+5. Open and read a polished recipe page.
+6. Adjust the number of servings.
+7. See ingredient quantities scale accordingly.
+8. Switch supported ingredient measurements between mass and volume.
+9. View instruction steps and optional step images.
+10. Read recipe notes.
+11. Print a clean version of the recipe.
+12. Navigate to related recipes.
 
 The website must work responsively and provide a polished public experience suitable for inclusion in a professional web development portfolio.
