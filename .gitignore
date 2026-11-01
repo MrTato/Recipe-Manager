@@ -1,0 +1,60 @@
+# ==========================================
+# RECIPE MANAGER - WORDPRESS
+# ==========================================
+
+# Ignore everything at the wp-content root
+/*
+
+# Track the .gitignore file
+!/.gitignore
+!/README.md
+!/PROJECT.md
+
+# ==========================================
+# CUSTOM THEMES
+# ==========================================
+
+# Allow the themes directory
+!/themes/
+
+# Ignore all themes by default
+/themes/*
+
+# Track our custom theme
+!/themes/recipe-manager/
+
+# ==========================================
+# CUSTOM PLUGINS
+# ==========================================
+
+# Allow the plugins directory
+!/plugins/
+
+# Ignore all plugins by default
+/plugins/*
+
+# Track our custom plugin
+!/plugins/recipe-manager-core/
+
+# ==========================================
+# DEVELOPMENT FILES
+# ==========================================
+
+# Dependencies
+**/node_modules/
+**/vendor/
+
+# Environment variables
+**/.env
+**/.env.*
+
+# Logs
+*.log
+
+# IDE files
+.idea/
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
