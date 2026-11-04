@@ -259,11 +259,26 @@ Examples include conversions between measurements such as:
 
 Conversions should preserve reasonable cooking precision.
 
-Because volume-to-mass conversion depends on ingredient density, conversions that require ingredient-specific information should only be performed when reliable conversion information exists for that ingredient.
+## Author-Provided Alternate Measurements
 
-The system should not assume that a cup of every ingredient has the same mass.
+The recipe author can optionally provide two equivalent measurements for an
+ingredient: one by volume and one by mass. For example, the author might enter
+2 cups of flour and an alternate measurement of 240 grams for the same amount.
 
-This feature should therefore be based on structured units and explicitly supported conversions rather than arbitrary mathematical conversion between every possible unit.
+When a visitor switches between volume and mass measurements, the recipe shows
+the corresponding amount supplied by the author. The author is responsible for
+providing an accurate equivalence for that ingredient; the website does not
+guess its weight from its name or assume that every ingredient weighs the same
+per cup.
+
+Both measurements follow serving adjustments. Doubling the example recipe
+shows either 4 cups or 480 grams of flour, depending on the visitor's selection.
+
+Alternate measurements are optional. If an ingredient has no alternate
+measurement, it keeps its original measurement type when the visitor switches.
+Its quantity still adjusts with the number of servings. Supported conversions
+within the same measurement type, such as grams to kilograms, remain available
+without an alternate measurement.
 
 ---
 
@@ -665,17 +680,15 @@ the essential search/category/tag experience.
 
 Implement serving scaling from immutable original quantities. Define a small,
 explicit set of supported units and conversions. Same-dimension conversions
-such as grams to kilograms use known factors. Mass-to-volume conversion
-requires reliable ingredient-specific density data; leave an ingredient in its
-original unit when that data is unavailable. Display sensible cooking precision
+such as grams to kilograms use known factors. Switching between mass and volume
+uses the equivalent measurements provided by the author; leave an ingredient in
+its original measurement type when no alternate is provided. Display sensible cooking precision
 and preserve nonnumeric quantities such as “to taste” without scaling them.
 
-The unit catalog alone does not provide ingredient density. With free-text
-ingredient names and no ingredient catalog in the MVP, do not infer density
-from names or promise arbitrary mass-to-volume conversion. Such conversions
-remain unavailable unless reliable ingredient-specific data is explicitly
-provided; serving scaling and supported same-dimension conversions work
-independently of that data.
+Do not infer ingredient density from free-text names or promise arbitrary
+mass-to-volume conversion. Author-provided alternate measurements apply to the
+specific ingredient in that recipe. Serving scaling and supported
+same-dimension conversions work independently of alternate measurements.
 
 # Implementation Sequence
 
