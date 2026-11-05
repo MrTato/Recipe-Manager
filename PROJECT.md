@@ -217,7 +217,7 @@ metadata (`_rm_ingredients`). Each row contains a free-text name, optional
 preparation notes and group label, and separate `mass_quantity`/`mass_unit`
 and `volume_quantity`/`volume_unit` fields. At least one complete measurement
 is required; both may be supplied as author-provided equivalent amounts.
-Each supplied measurement needs a nonnegative decimal quantity and a unit
+Each supplied measurement needs a positive decimal quantity and a unit
 from the corresponding mass or volume catalog. Count, informal, and unmeasured
 entries are not accepted by this editor. Entirely blank rows are ignored.
 

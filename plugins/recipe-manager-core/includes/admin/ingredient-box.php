@@ -77,7 +77,7 @@ function render_ingredient_box( $post ) {
 	wp_nonce_field( 'rm_save_ingredients', 'rm_ingredients_nonce' );
 	?>
 	<div id="rm-ingredient-editor">
-		<p><?php esc_html_e( 'Each ingredient needs a name and at least one complete measurement: mass or volume. You may provide both as equivalent amounts. Use decimals such as 0.5 or 0.25. Spoon and cup measures: teaspoon 5 ml, tablespoon 15 ml, cup 250 ml.', 'recipe-manager-core' ); ?></p>
+		<p><?php esc_html_e( 'Each ingredient needs a name and at least one complete measurement: mass or volume. You may provide both as equivalent amounts. Use positive decimals such as 0.5 or 0.25; quantities must be greater than zero. Spoon and cup measures: teaspoon 5 ml, tablespoon 15 ml, cup 250 ml.', 'recipe-manager-core' ); ?></p>
 		<p id="rm-ingredient-group-help"><?php esc_html_e( 'Grouping is optional. Enter any group name, such as Chicken ingredients or Sauce ingredients, and use the same name for related ingredients. Leave it blank for ungrouped ingredients. Move related rows together to show them under one heading.', 'recipe-manager-core' ); ?></p>
 		<datalist id="rm-ingredient-groups">
 			<?php
@@ -106,11 +106,12 @@ function enqueue_ingredient_assets( $hook ) {
 		return;
 	}
 	$plugin_file = dirname( __DIR__, 2 ) . '/recipe-manager-core.php';
+	wp_enqueue_script( 'rm-recipe-validation-notice', plugins_url( 'assets/validation-notice.js', $plugin_file ), array(), (string) filemtime( dirname( __DIR__, 2 ) . '/assets/validation-notice.js' ), true );
 	foreach ( array( 'js', 'css' ) as $extension ) {
 		$path = dirname( __DIR__, 2 ) . '/assets/admin.' . $extension;
 		$url  = plugins_url( 'assets/admin.' . $extension, $plugin_file );
 		if ( 'js' === $extension ) {
-			wp_enqueue_script( 'rm-recipe-admin', $url, array(), (string) filemtime( $path ), true );
+			wp_enqueue_script( 'rm-recipe-admin', $url, array( 'rm-recipe-validation-notice' ), (string) filemtime( $path ), true );
 		} else {
 			wp_enqueue_style( 'rm-recipe-admin', $url, array(), (string) filemtime( $path ) );
 		}

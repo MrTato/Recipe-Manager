@@ -47,7 +47,7 @@ function sanitize_ingredient_rows( $rows ) {
 				continue;
 			}
 			if ( ! isset( $units[ $unit ] ) || $units[ $unit ]['type'] !== $type
-				|| ! preg_match( '/\A(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)\z/', $quantity ) || ! is_finite( (float) $quantity ) ) {
+				|| ! preg_match( '/\A(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)\z/', $quantity ) || ! is_finite( (float) $quantity ) || (float) $quantity <= 0 ) {
 				return new \WP_Error( 'invalid_ingredients' );
 			}
 			$has_measurement = true;
@@ -98,7 +98,7 @@ function show_ingredient_save_error() {
 		return;
 	}
 	echo '<div class="notice notice-error"><p>';
-	esc_html_e( 'Ingredients were not saved. Previous ingredient data was kept. Each nonempty row needs a name and at least one complete mass or volume measurement. Each supplied measurement needs a supported unit and a nonnegative decimal quantity. Use 0.5 rather than 1/2. Re-enter your ingredient changes and save again.', 'recipe-manager-core' );
+	esc_html_e( 'Ingredients were not saved. Previous ingredient data was kept. Each nonempty row needs a name and at least one complete mass or volume measurement. Each supplied measurement needs a supported unit and a positive decimal quantity. Use 0.5 rather than 1/2. Re-enter your ingredient changes and save again.', 'recipe-manager-core' );
 	echo '</p></div>';
 }
 add_action( 'admin_notices', __NAMESPACE__ . '\\show_ingredient_save_error' );
@@ -172,3 +172,21 @@ function show_instruction_save_error() {
 	echo '</p></div>';
 }
 add_action( 'admin_notices', __NAMESPACE__ . '\\show_instruction_save_error' );
+
+
+/**
+ * Shared summary for client-side validation and rejected server submissions.
+ */
+function show_recipe_validation_notice() {
+	$screen = get_current_screen();
+	if ( ! $screen || 'rm_recipe' !== $screen->post_type || 'post' !== $screen->base ) {
+		return;
+	}
+	$has_error = isset( $_GET['rm_ingredient_error'] ) || isset( $_GET['rm_step_error'] );
+	?>
+	<div id="rm-recipe-validation-notice" class="notice notice-error" role="alert" tabindex="-1" <?php if ( ! $has_error ) : ?>hidden<?php endif; ?>>
+		<p><?php esc_html_e( 'There are errors. Please fix them', 'recipe-manager-core' ); ?></p>
+	</div>
+	<?php
+}
+add_action( 'admin_notices', __NAMESPACE__ . '\\show_recipe_validation_notice', 5 );

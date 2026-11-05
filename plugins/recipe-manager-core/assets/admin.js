@@ -45,8 +45,11 @@
 				const unit = fields[`${type}_unit`];
 				if (!quantity.value && !unit.value && !quantity.validity.badInput) return;
 				if (!quantity.value && !errors[`${type}_quantity`]) errors[`${type}_quantity`] = 'Enter a quantity for this measurement.';
+				if (quantity.value && (!/^(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)$/.test(quantity.value) || !Number.isFinite(Number(quantity.value)) || Number(quantity.value) <= 0)) {
+					errors[`${type}_quantity`] = 'Enter a positive decimal quantity greater than zero.';
+				}
 				if (!unit.value) errors[`${type}_unit`] = 'Select a unit for this measurement.';
-				if (quantity.value && unit.value && quantity.validity.valid) complete = true;
+				if (quantity.value && unit.value && quantity.validity.valid && !errors[`${type}_quantity`]) complete = true;
 			});
 			if (!complete && !errors.mass_quantity && !errors.volume_quantity) {
 				const message = editor.querySelector('[data-measurement-message]').textContent;

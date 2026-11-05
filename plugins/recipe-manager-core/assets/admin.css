@@ -56,3 +56,7 @@
 #rm-ingredient-editor .rm-measurement-error[hidden] {
 	display: none;
 }
+
+#rm-recipe-validation-notice[hidden] {
+	display: none;
+}
