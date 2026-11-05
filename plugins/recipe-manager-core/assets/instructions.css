@@ -1,0 +1,25 @@
+#rm-instruction-editor .rm-step-row {
+	border: 1px solid #c3c4c7;
+	padding: 12px;
+	margin-bottom: 12px;
+}
+
+#rm-instruction-editor h4 { margin: 0 0 12px; }
+#rm-instruction-editor label span { display: block; margin-bottom: 4px; font-weight: 600; }
+#rm-instruction-editor textarea { width: 100%; }
+#rm-instruction-editor .rm-step-image,
+#rm-instruction-editor .rm-step-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
+#rm-instruction-editor [data-step-preview] { max-width: 200px; max-height: 160px; object-fit: contain; }
+#rm-instruction-editor [aria-disabled="true"] { opacity: 0.5; cursor: default; }
+#rm-instruction-editor [aria-invalid="true"] { border-color: #d63638; box-shadow: 0 0 0 1px #d63638; }
+#rm-instruction-editor .rm-step-error { color: #b32d2e; margin: 6px 0; }
+#rm-instruction-editor [hidden] { display: none; }
+
+#rm-instruction-editor .rm-step-group-heading {
+	margin: 0 0 12px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #c3c4c7;
+	font-size: 14px;
+}
+#rm-instruction-editor .rm-step-group-field { display: block; margin-top: 12px; }
+#rm-instruction-editor .rm-step-group-field input { width: 100%; max-width: 400px; }
