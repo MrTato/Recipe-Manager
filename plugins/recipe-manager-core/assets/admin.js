@@ -1,0 +1,103 @@
+/* Repeatable ingredient rows. DOM order is the saved order. */
+(() => {
+	'use strict';
+	const editor = document.getElementById('rm-ingredient-editor');
+	if (!editor) return;
+	const rows = editor.querySelector('[data-ingredient-rows]');
+	const template = document.getElementById('rm-ingredient-template');
+	const add = editor.querySelector('[data-ingredient-action="add"]');
+
+	function refreshGroups() {
+		const names = new Set();
+		let previousGroup = null;
+		Array.from(rows.children).forEach(row => {
+			const group = row.querySelector('[data-field="group"]').value.trim();
+			if (group) names.add(group);
+			const heading = row.querySelector('[data-group-heading]');
+			heading.textContent = group || editor.querySelector('[data-ungrouped-label]').textContent;
+			heading.hidden = group === previousGroup || (!group && previousGroup === null);
+			previousGroup = group;
+		});
+		const suggestions = editor.querySelector('#rm-ingredient-groups');
+		suggestions.replaceChildren(...Array.from(names, name => {
+			const option = document.createElement('option');
+			option.value = name;
+			return option;
+		}));
+	}
+
+	function validateRow(row) {
+		const fields = Object.fromEntries(Array.from(row.querySelectorAll('[data-field]'), input => [input.dataset.field, input]));
+		Object.values(fields).forEach(input => input.setCustomValidity(''));
+		if (!Object.values(fields).some(input => input.value.trim() !== '')) return;
+		if (!fields.name.value.trim()) fields.name.setCustomValidity('Enter an ingredient name.');
+		let complete = false;
+		['mass', 'volume'].forEach(type => {
+			const quantity = fields[`${type}_quantity`];
+			const unit = fields[`${type}_unit`];
+			if (!quantity.value && !unit.value) return;
+			if (!quantity.value) quantity.setCustomValidity('Enter a quantity for this measurement.');
+			if (!unit.value) unit.setCustomValidity('Select a unit for this measurement.');
+			if (quantity.value && unit.value) complete = true;
+		});
+		if (!complete && !fields.mass_quantity.validationMessage && !fields.volume_quantity.validationMessage) {
+			fields.mass_quantity.setCustomValidity('Provide at least one complete mass or volume measurement.');
+		}
+	}
+
+	editor.addEventListener('input', event => {
+		const row = event.target.closest('.rm-ingredient-row');
+		if (row) validateRow(row);
+		if (event.target.dataset.field === 'group') refreshGroups();
+	});
+	editor.addEventListener('change', event => {
+		const row = event.target.closest('.rm-ingredient-row');
+		if (row) validateRow(row);
+		if (event.target.dataset.field === 'group') refreshGroups();
+	});
+
+	function refresh() {
+		refreshGroups();
+		Array.from(rows.children).forEach((row, index) => {
+			validateRow(row);
+			row.querySelectorAll('[data-field]').forEach((input) => {
+				input.name = `rm_ingredients[${index}][${input.dataset.field}]`;
+			});
+			// Keep boundary buttons focusable when a moved row reaches an edge.
+			row.querySelector('[data-ingredient-action="up"]').setAttribute('aria-disabled', String(index === 0));
+			row.querySelector('[data-ingredient-action="down"]').setAttribute('aria-disabled', String(index === rows.children.length - 1));
+		});
+	}
+
+	editor.addEventListener('click', (event) => {
+		const button = event.target.closest('[data-ingredient-action]');
+		if (!button || !editor.contains(button) || button.getAttribute('aria-disabled') === 'true') return;
+		const action = button.dataset.ingredientAction;
+		if (action === 'add') {
+			rows.append(template.content.cloneNode(true));
+			refresh();
+			rows.lastElementChild.querySelector('input').focus();
+			return;
+		}
+		const row = button.closest('.rm-ingredient-row');
+		if (!row) return;
+		if (action === 'remove') {
+			const next = row.nextElementSibling || row.previousElementSibling;
+			row.remove();
+			refresh();
+			(next ? next.querySelector('input') : add).focus();
+			return;
+		}
+		if (action === 'up' && row.previousElementSibling) {
+			rows.insertBefore(row, row.previousElementSibling);
+		} else if (action === 'down' && row.nextElementSibling) {
+			rows.insertBefore(row.nextElementSibling, row);
+		} else {
+			return;
+		}
+		refresh();
+		button.focus();
+		editor.querySelector('[data-ingredient-status]').textContent = editor.querySelector('[data-order-message]').textContent;
+	});
+	refresh();
+})();

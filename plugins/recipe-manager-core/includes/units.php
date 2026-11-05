@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * rather than maintaining separate unit lists. Store the array keys in recipe
  * metadata, never the translated labels.
  *
- * @return array<string, array{label: string, type: string, to_base_factor: int|null}>
+ * @return array<string, array{label: string, type: string, to_base_factor: int|float|null}>
  */
 function get_units() {
 	return array(
@@ -39,6 +39,16 @@ function get_units() {
 			'label'          => __( 'Kilograms', 'recipe-manager-core' ),
 			'type'           => 'mass',
 			'to_base_factor' => 1000,
+		),
+		'lb'      => array(
+			'label'          => __( 'Pounds (lb)', 'recipe-manager-core' ),
+			'type'           => 'mass',
+			'to_base_factor' => 453.59237,
+		),
+		'oz'      => array(
+			'label'          => __( 'Ounces (oz)', 'recipe-manager-core' ),
+			'type'           => 'mass',
+			'to_base_factor' => 28.349523125,
 		),
 		'ml'      => array(
 			'label'          => __( 'Milliliters', 'recipe-manager-core' ),

@@ -213,16 +213,24 @@ the volume represented by each supported spoon/cup unit explicitly so
 conversions are consistent.
 
 Store ingredient rows in their authored order as structured recipe post
-metadata. Each row contains a free-text name, a separate validated decimal
-quantity, a unit code, and optional preparation notes and group label. Allow
-an absent quantity and unit for entries such as “salt to taste”; keep “to taste”
-in the notes rather than the numeric quantity field.
+metadata (`_rm_ingredients`). Each row contains a free-text name, optional
+preparation notes and group label, and separate `mass_quantity`/`mass_unit`
+and `volume_quantity`/`volume_unit` fields. At least one complete measurement
+is required; both may be supplied as author-provided equivalent amounts.
+Each supplied measurement needs a nonnegative decimal quantity and a unit
+from the corresponding mass or volume catalog. Count, informal, and unmeasured
+entries are not accepted by this editor. Entirely blank rows are ignored.
 
-Serving adjustments use the original quantity multiplied by desired servings
+Serving adjustments use each original quantity multiplied by desired servings
 divided by default servings. Recalculate from the original value and round only
-for display. Entries without numeric quantities remain unchanged.
+for display.
 
-Ingredients may optionally be organized into groups when useful.
+Ingredients may optionally be organized into groups using a free-text group
+name on each ingredient row. The editor suggests group names already used in
+the recipe and shows a heading when the group changes between adjacent rows.
+Authors can reorder rows to keep related ingredients together. Blank group
+names remain ungrouped. Group labels are saved with the ingredient rows;
+public recipe group rendering is deferred.
 
 Example:
 

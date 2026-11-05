@@ -1,0 +1,42 @@
+#rm-ingredient-editor .rm-ingredient-row {
+	border: 1px solid #c3c4c7;
+	padding: 12px;
+	margin-bottom: 12px;
+}
+
+#rm-ingredient-editor .rm-ingredient-fields {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+	gap: 12px;
+}
+
+#rm-ingredient-editor label span {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: 600;
+}
+
+#rm-ingredient-editor input,
+#rm-ingredient-editor select {
+	width: 100%;
+	max-width: none;
+}
+
+#rm-ingredient-editor .rm-ingredient-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 12px;
+}
+
+#rm-ingredient-editor [aria-disabled="true"] {
+	opacity: 0.5;
+	cursor: default;
+}
+
+#rm-ingredient-editor .rm-ingredient-group-heading {
+	margin: 0 0 12px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #c3c4c7;
+	font-size: 14px;
+}
