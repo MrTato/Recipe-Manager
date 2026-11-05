@@ -58,6 +58,7 @@ function render_ingredient_row( $index, $row = array() ) {
 							value="<?php echo esc_attr( (string) $row[ $field ] ); ?>"
 							<?php if ( in_array( $field, array( 'mass_quantity', 'volume_quantity' ), true ) ) : ?>min="0" step="any" inputmode="decimal"<?php endif; ?> />
 					<?php endif; ?>
+					<span class="rm-measurement-error" data-field-error="<?php echo esc_attr( $field ); ?>" role="alert" hidden></span>
 				</label>
 			<?php endforeach; ?>
 		</div>
@@ -92,6 +93,7 @@ function render_ingredient_box( $post ) {
 		<button type="button" class="button" data-ingredient-action="add"><?php esc_html_e( 'Add ingredient', 'recipe-manager-core' ); ?></button>
 		<template id="rm-ingredient-template"><?php render_ingredient_row( '__INDEX__' ); ?></template>
 		<p class="screen-reader-text" aria-live="polite" data-ingredient-status></p>
+		<span hidden data-measurement-message><?php esc_html_e( 'Provide at least one complete mass or volume measurement.', 'recipe-manager-core' ); ?></span>
 		<span hidden data-ungrouped-label><?php esc_html_e( 'Ungrouped ingredients', 'recipe-manager-core' ); ?></span>
 		<span hidden data-order-message><?php esc_html_e( 'Ingredient order updated.', 'recipe-manager-core' ); ?></span>
 	</div>

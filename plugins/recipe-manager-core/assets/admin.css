@@ -40,3 +40,19 @@
 	border-bottom: 1px solid #c3c4c7;
 	font-size: 14px;
 }
+
+#rm-ingredient-editor select[aria-invalid="true"],
+#rm-ingredient-editor input[aria-invalid="true"] {
+	border-color: #d63638;
+	box-shadow: 0 0 0 1px #d63638;
+}
+
+#rm-ingredient-editor .rm-measurement-error {
+	margin-top: 6px;
+	color: #b32d2e;
+	font-weight: 400;
+}
+
+#rm-ingredient-editor .rm-measurement-error[hidden] {
+	display: none;
+}

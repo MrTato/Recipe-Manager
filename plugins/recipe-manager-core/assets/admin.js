@@ -28,22 +28,51 @@
 
 	function validateRow(row) {
 		const fields = Object.fromEntries(Array.from(row.querySelectorAll('[data-field]'), input => [input.dataset.field, input]));
-		Object.values(fields).forEach(input => input.setCustomValidity(''));
-		if (!Object.values(fields).some(input => input.value.trim() !== '')) return;
-		if (!fields.name.value.trim()) fields.name.setCustomValidity('Enter an ingredient name.');
-		let complete = false;
-		['mass', 'volume'].forEach(type => {
-			const quantity = fields[`${type}_quantity`];
-			const unit = fields[`${type}_unit`];
-			if (!quantity.value && !unit.value) return;
-			if (!quantity.value) quantity.setCustomValidity('Enter a quantity for this measurement.');
-			if (!unit.value) unit.setCustomValidity('Select a unit for this measurement.');
-			if (quantity.value && unit.value) complete = true;
+		const errors = {};
+		Object.entries(fields).forEach(([field, input]) => {
+			input.setCustomValidity('');
+			if (!input.validity.valid) errors[field] = input.validationMessage;
+			input.removeAttribute('aria-invalid');
+			if (field !== 'group') input.removeAttribute('aria-describedby');
+			row.querySelector(`[data-field-error="${field}"]`).hidden = true;
 		});
-		if (!complete && !fields.mass_quantity.validationMessage && !fields.volume_quantity.validationMessage) {
-			fields.mass_quantity.setCustomValidity('Provide at least one complete mass or volume measurement.');
+		const nonempty = Object.values(fields).some(input => input.value.trim() !== '' || input.validity.badInput);
+		if (nonempty) {
+			if (!fields.name.value.trim()) errors.name = 'Enter an ingredient name.';
+			let complete = false;
+			['mass', 'volume'].forEach(type => {
+				const quantity = fields[`${type}_quantity`];
+				const unit = fields[`${type}_unit`];
+				if (!quantity.value && !unit.value && !quantity.validity.badInput) return;
+				if (!quantity.value && !errors[`${type}_quantity`]) errors[`${type}_quantity`] = 'Enter a quantity for this measurement.';
+				if (!unit.value) errors[`${type}_unit`] = 'Select a unit for this measurement.';
+				if (quantity.value && unit.value && quantity.validity.valid) complete = true;
+			});
+			if (!complete && !errors.mass_quantity && !errors.volume_quantity) {
+				const message = editor.querySelector('[data-measurement-message]').textContent;
+				errors.mass_unit = message;
+				errors.volume_unit = message;
+			}
 		}
+		Object.entries(errors).forEach(([field, message]) => {
+			fields[field].setCustomValidity(message);
+			if (row.dataset.validationAttempted !== 'true') return;
+			const error = row.querySelector(`[data-field-error="${field}"]`);
+			error.textContent = message;
+			error.hidden = false;
+			fields[field].setAttribute('aria-invalid', 'true');
+			fields[field].setAttribute('aria-describedby', error.id);
+		});
 	}
+
+	// Keep native form blocking, but replace all ingredient bubbles with inline errors.
+	editor.addEventListener('invalid', event => {
+		const row = event.target.closest('.rm-ingredient-row');
+		if (!row) return;
+		event.preventDefault();
+		row.dataset.validationAttempted = 'true';
+		validateRow(row);
+	}, true);
 
 	editor.addEventListener('input', event => {
 		const row = event.target.closest('.rm-ingredient-row');
@@ -59,6 +88,9 @@
 	function refresh() {
 		refreshGroups();
 		Array.from(rows.children).forEach((row, index) => {
+			row.querySelectorAll('[data-field-error]').forEach(error => {
+				error.id = `rm-measurement-error-${index}-${error.dataset.fieldError}`;
+			});
 			validateRow(row);
 			row.querySelectorAll('[data-field]').forEach((input) => {
 				input.name = `rm_ingredients[${index}][${input.dataset.field}]`;
