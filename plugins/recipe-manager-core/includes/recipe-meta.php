@@ -61,7 +61,7 @@ function rm_recipe_meta_text( $value ) {
  * @return array{0: float|null, 1: string}
  */
 function rm_recipe_meta_measurement( $quantity, $unit, $type, $units ) {
-	if ( ! is_string( $unit ) || ! isset( $units[ $unit ] ) || $units[ $unit ]['type'] !== $type
+	if ( ! is_string( $unit ) || ( 'optional' === $type ? '' === $unit : ( ! isset( $units[ $unit ] ) || $units[ $unit ]['type'] !== $type ) )
 		|| ( ! is_string( $quantity ) && ! is_int( $quantity ) && ! is_float( $quantity ) ) ) {
 		return array( null, '' );
 	}
@@ -80,7 +80,7 @@ function rm_recipe_meta_measurement( $quantity, $unit, $type, $units ) {
  * or volume measurements without rewriting the original stored collection.
  *
  * @param int|string $recipe_id Recipe post ID.
- * @return array<int, array{name: string, mass_quantity: float|null, mass_unit: string, volume_quantity: float|null, volume_unit: string, note: string, group: string}>
+ * @return array<int, array{name: string, mass_quantity: float|null, mass_unit: string, volume_quantity: float|null, volume_unit: string, optional_quantity: float|null, optional_unit: string, note: string, group: string}>
  */
 function rm_get_recipe_ingredients( $recipe_id ) {
 	$stored = rm_recipe_meta_value( $recipe_id, '_rm_ingredients' );
@@ -100,18 +100,21 @@ function rm_get_recipe_ingredients( $recipe_id ) {
 		$legacy_unit = $row['unit'] ?? '';
 		$legacy_type = is_string( $legacy_unit ) ? ( $units[ $legacy_unit ]['type'] ?? '' ) : '';
 		$measurements = array();
-		foreach ( array( 'mass', 'volume' ) as $type ) {
+		foreach ( array( 'mass', 'volume', 'optional' ) as $type ) {
 			$quantity = $row[ $type . '_quantity' ] ?? null;
 			$unit = $row[ $type . '_unit' ] ?? '';
 			if ( ! array_key_exists( $type . '_quantity', $row ) && ! array_key_exists( $type . '_unit', $row ) && $legacy_type === $type ) {
 				$quantity = $row['quantity'] ?? null;
 				$unit = $legacy_unit;
 			}
+			if ( 'optional' === $type ) {
+				$unit = rm_recipe_meta_text( $unit );
+			}
 			list( $quantity, $unit ) = rm_recipe_meta_measurement( $quantity, $unit, $type, $units );
 			$measurements[ $type . '_quantity' ] = $quantity;
 			$measurements[ $type . '_unit' ] = $unit;
 		}
-		if ( null === $measurements['mass_quantity'] && null === $measurements['volume_quantity'] ) {
+		if ( null === $measurements['mass_quantity'] && null === $measurements['volume_quantity'] && null === $measurements['optional_quantity'] ) {
 			continue;
 		}
 		$ingredients[] = array_merge(

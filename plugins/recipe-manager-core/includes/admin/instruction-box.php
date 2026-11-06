@@ -21,26 +21,30 @@ function render_instruction_row( $index, $step = array() ) {
 	?>
 	<div class="rm-step-row">
 		<h3 class="rm-step-group-heading" data-step-group-heading hidden></h3>
-		<h4><?php esc_html_e( 'Step', 'recipe-manager-core' ); ?> <span data-step-number><?php echo is_int( $index ) ? esc_html( $index + 1 ) : ''; ?></span></h4>
-		<label>
-			<span><?php esc_html_e( 'Instruction text', 'recipe-manager-core' ); ?></span>
-			<textarea rows="4" name="rm_steps[<?php echo esc_attr( $index ); ?>][text]" data-step-field="text"><?php echo esc_textarea( $step['text'] ); ?></textarea>
-		</label>
-		<label class="rm-step-group-field">
-			<span><?php esc_html_e( 'Group (optional)', 'recipe-manager-core' ); ?></span>
-			<input type="text" name="rm_steps[<?php echo esc_attr( $index ); ?>][group]" data-step-field="group" value="<?php echo esc_attr( $step['group'] ); ?>" list="rm-step-groups" aria-describedby="rm-step-group-help" />
-		</label>
-		<p class="rm-step-error" data-step-error role="alert" hidden><?php esc_html_e( 'Enter instruction text for this step, or clear its image and group.', 'recipe-manager-core' ); ?></p>
+		<h4 class="rm-step-badge"><?php esc_html_e( 'Step', 'recipe-manager-core' ); ?> <span data-step-number><?php echo is_int( $index ) ? esc_html( $index + 1 ) : ''; ?></span></h4>
+		<div class="rm-step-content">
+			<label class="rm-step-text-field">
+				<span class="rm-step-section-title"><?php esc_html_e( 'Instruction', 'recipe-manager-core' ); ?></span>
+				<textarea rows="3" name="rm_steps[<?php echo esc_attr( $index ); ?>][text]" data-step-field="text"><?php echo esc_textarea( $step['text'] ); ?></textarea>
+			</label>
+			<p class="rm-step-error" data-step-error role="alert" hidden><?php esc_html_e( 'Enter instruction text for this step, or clear its image and group.', 'recipe-manager-core' ); ?></p>
+			<label class="rm-step-group-field">
+				<span><?php esc_html_e( 'Group (optional)', 'recipe-manager-core' ); ?></span>
+				<input type="text" name="rm_steps[<?php echo esc_attr( $index ); ?>][group]" data-step-field="group" value="<?php echo esc_attr( $step['group'] ); ?>" autocomplete="off" aria-describedby="rm-step-group-help" />
+			</label>
+		</div>
 		<input type="hidden" name="rm_steps[<?php echo esc_attr( $index ); ?>][image_id]" data-step-field="image_id" value="<?php echo esc_attr( $image_id ); ?>" />
 		<div class="rm-step-image">
+			<div class="rm-step-section-title"><span class="dashicons dashicons-format-image" aria-hidden="true"></span><?php esc_html_e( 'Image', 'recipe-manager-core' ); ?><small><?php esc_html_e( '(Optional)', 'recipe-manager-core' ); ?></small></div>
+			<div class="rm-step-image-placeholder" aria-hidden="true"><span class="dashicons dashicons-format-image"></span></div>
 			<img data-step-preview alt="<?php esc_attr_e( 'Step image preview', 'recipe-manager-core' ); ?>" <?php if ( $image ) : ?>src="<?php echo esc_url( $image[0] ); ?>"<?php else : ?>hidden<?php endif; ?> />
 			<button type="button" class="button" data-step-action="image"><?php esc_html_e( 'Choose or replace image', 'recipe-manager-core' ); ?></button>
-			<button type="button" class="button" data-step-action="clear-image" <?php if ( ! $image_id ) : ?>hidden<?php endif; ?>><?php esc_html_e( 'Remove image', 'recipe-manager-core' ); ?></button>
+			<button type="button" class="button-link-delete" data-step-action="clear-image" <?php if ( ! $image_id ) : ?>hidden<?php endif; ?>><?php esc_html_e( 'Remove image', 'recipe-manager-core' ); ?></button>
 		</div>
 		<div class="rm-step-actions">
-			<button type="button" class="button" data-step-action="up"><?php esc_html_e( 'Move up', 'recipe-manager-core' ); ?></button>
-			<button type="button" class="button" data-step-action="down"><?php esc_html_e( 'Move down', 'recipe-manager-core' ); ?></button>
-			<button type="button" class="button" data-step-action="remove"><?php esc_html_e( 'Remove step', 'recipe-manager-core' ); ?></button>
+			<button type="button" class="button" data-step-action="up" aria-label="<?php esc_attr_e( 'Move up', 'recipe-manager-core' ); ?>" title="<?php esc_attr_e( 'Move up', 'recipe-manager-core' ); ?>"><span class="dashicons dashicons-arrow-up-alt2" aria-hidden="true"></span></button>
+			<button type="button" class="button" data-step-action="down" aria-label="<?php esc_attr_e( 'Move down', 'recipe-manager-core' ); ?>" title="<?php esc_attr_e( 'Move down', 'recipe-manager-core' ); ?>"><span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span></button>
+			<button type="button" class="button" data-step-action="remove" aria-label="<?php esc_attr_e( 'Remove step', 'recipe-manager-core' ); ?>" title="<?php esc_attr_e( 'Remove step', 'recipe-manager-core' ); ?>"><span class="dashicons dashicons-trash" aria-hidden="true"></span></button>
 		</div>
 	</div>
 	<?php
@@ -52,15 +56,11 @@ function render_instruction_box( $post ) {
 	wp_nonce_field( 'rm_save_steps', 'rm_steps_nonce' );
 	?>
 	<div id="rm-instruction-editor" data-media-title="<?php esc_attr_e( 'Choose a step image', 'recipe-manager-core' ); ?>" data-media-button="<?php esc_attr_e( 'Use image', 'recipe-manager-core' ); ?>">
+		<details class="rm-instruction-help">
+			<summary><?php esc_html_e( 'Instruction entry help', 'recipe-manager-core' ); ?></summary>
 		<p><?php esc_html_e( 'Add instructions in cooking order. Images are optional. Step numbers update automatically when you reorder steps.', 'recipe-manager-core' ); ?></p>
 		<p id="rm-step-group-help"><?php esc_html_e( 'Grouping is optional. Use any group name, such as Prepare chicken or Make sauce. Reuse a name for related steps and move them together to show one subtitle. Leave it blank for ungrouped steps. Step numbers continue across all groups.', 'recipe-manager-core' ); ?></p>
-		<datalist id="rm-step-groups">
-			<?php
-			$groups = array_unique( array_filter( array_column( $steps, 'group' ), static function ( $group ) { return '' !== trim( (string) $group ); } ) );
-			foreach ( $groups as $group ) : ?>
-				<option value="<?php echo esc_attr( $group ); ?>"></option>
-			<?php endforeach; ?>
-		</datalist>
+		</details>
 		<noscript><p><?php esc_html_e( 'Enable JavaScript to add, remove, or reorder steps and choose images. Existing instruction text can still be edited and saved.', 'recipe-manager-core' ); ?></p></noscript>
 		<div data-step-rows>
 			<?php foreach ( $steps as $index => $step ) { render_instruction_row( $index, $step ); } ?>

@@ -8,22 +8,15 @@
 	const add = editor.querySelector('[data-ingredient-action="add"]');
 
 	function refreshGroups() {
-		const names = new Set();
 		let previousGroup = null;
 		Array.from(rows.children).forEach(row => {
 			const group = row.querySelector('[data-field="group"]').value.trim();
-			if (group) names.add(group);
 			const heading = row.querySelector('[data-group-heading]');
 			heading.textContent = group || editor.querySelector('[data-ungrouped-label]').textContent;
 			heading.hidden = group === previousGroup || (!group && previousGroup === null);
 			previousGroup = group;
 		});
-		const suggestions = editor.querySelector('#rm-ingredient-groups');
-		suggestions.replaceChildren(...Array.from(names, name => {
-			const option = document.createElement('option');
-			option.value = name;
-			return option;
-		}));
+
 	}
 
 	function validateRow(row) {
@@ -34,27 +27,29 @@
 			if (!input.validity.valid) errors[field] = input.validationMessage;
 			input.removeAttribute('aria-invalid');
 			if (field !== 'group') input.removeAttribute('aria-describedby');
-			row.querySelector(`[data-field-error="${field}"]`).hidden = true;
+			const error = row.querySelector(`[data-field-error="${field}"]`);
+			if (error) error.hidden = true;
 		});
 		const nonempty = Object.values(fields).some(input => input.value.trim() !== '' || input.validity.badInput);
 		if (nonempty) {
 			if (!fields.name.value.trim()) errors.name = 'Enter an ingredient name.';
 			let complete = false;
-			['mass', 'volume'].forEach(type => {
+			['mass', 'volume', 'optional'].forEach(type => {
 				const quantity = fields[`${type}_quantity`];
 				const unit = fields[`${type}_unit`];
-				if (!quantity.value && !unit.value && !quantity.validity.badInput) return;
+				if (!quantity.value && !unit.value.trim() && !quantity.validity.badInput) return;
 				if (!quantity.value && !errors[`${type}_quantity`]) errors[`${type}_quantity`] = 'Enter a quantity for this measurement.';
 				if (quantity.value && (!/^(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)$/.test(quantity.value) || !Number.isFinite(Number(quantity.value)) || Number(quantity.value) <= 0)) {
 					errors[`${type}_quantity`] = 'Enter a positive decimal quantity greater than zero.';
 				}
-				if (!unit.value) errors[`${type}_unit`] = 'Select a unit for this measurement.';
-				if (quantity.value && unit.value && quantity.validity.valid && !errors[`${type}_quantity`]) complete = true;
+				if (!unit.value.trim()) errors[`${type}_unit`] = type === 'optional' ? 'Enter an optional unit name, such as cloves.' : 'Select a unit for this measurement.';
+				if (quantity.value && unit.value.trim() && quantity.validity.valid && !errors[`${type}_quantity`]) complete = true;
 			});
-			if (!complete && !errors.mass_quantity && !errors.volume_quantity) {
+			if (!complete && !errors.mass_quantity && !errors.volume_quantity && !errors.optional_quantity) {
 				const message = editor.querySelector('[data-measurement-message]').textContent;
 				errors.mass_unit = message;
 				errors.volume_unit = message;
+				errors.optional_unit = message;
 			}
 		}
 		Object.entries(errors).forEach(([field, message]) => {
@@ -111,7 +106,7 @@
 		if (action === 'add') {
 			rows.append(template.content.cloneNode(true));
 			refresh();
-			rows.lastElementChild.querySelector('input').focus();
+			rows.lastElementChild.querySelector('[data-field="name"]').focus();
 			return;
 		}
 		const row = button.closest('.rm-ingredient-row');
@@ -120,7 +115,7 @@
 			const next = row.nextElementSibling || row.previousElementSibling;
 			row.remove();
 			refresh();
-			(next ? next.querySelector('input') : add).focus();
+			(next ? next.querySelector('[data-field="name"]') : add).focus();
 			return;
 		}
 		if (action === 'up' && row.previousElementSibling) {

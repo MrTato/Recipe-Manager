@@ -45,7 +45,7 @@ With Recipe Manager Core active, templates can call these read-only helpers:
 
 | Function | Return value |
 | --- | --- |
-| `rm_get_recipe_ingredients($recipe_id)` | Ordered array with name, mass/volume quantities and units, note, and group. Quantities are positive floats or `null`; unused units are `''`. Defaults to `[]`. |
+| `rm_get_recipe_ingredients($recipe_id)` | Ordered array with name, mass/volume quantities and units, optional free-text unit and quantity, legacy note, and group. Quantities are positive floats or `null`; unused units are `''`. Defaults to `[]`. |
 | `rm_get_recipe_steps($recipe_id)` | Ordered array of `text`, `image_id` (integer, or `0` without an image), and `group`. Defaults to `[]`. |
 | `rm_get_recipe_servings($recipe_id)` | Positive integer, defaulting to `1`. |
 | `rm_get_recipe_total_minutes($recipe_id)` | Integer preparation plus cooking time; missing or invalid components count as `0`. |

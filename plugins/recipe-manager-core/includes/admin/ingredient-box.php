@@ -14,6 +14,33 @@ function register_ingredient_box() {
 }
 add_action( 'add_meta_boxes_rm_recipe', __NAMESPACE__ . '\\register_ingredient_box' );
 
+/** Render a labeled field while keeping existing submission and error hooks. */
+function render_ingredient_field( $index, $field, $label, $value, $units ) {
+	$is_quantity = in_array( $field, array( 'mass_quantity', 'volume_quantity', 'optional_quantity' ), true );
+	?>
+	<label class="rm-field-<?php echo esc_attr( $field ); ?>">
+		<span class="rm-field-label"><?php echo esc_html( $label ); ?></span>
+		<?php if ( in_array( $field, array( 'mass_unit', 'volume_unit' ), true ) ) : ?>
+			<select name="rm_ingredients[<?php echo esc_attr( $index ); ?>][<?php echo esc_attr( $field ); ?>]" data-field="<?php echo esc_attr( $field ); ?>">
+				<option value=""><?php esc_html_e( 'No unit', 'recipe-manager-core' ); ?></option>
+				<?php foreach ( $units as $code => $unit ) :
+					if ( $unit['type'] !== ( 'mass_unit' === $field ? 'mass' : 'volume' ) ) { continue; } ?>
+					<option value="<?php echo esc_attr( $code ); ?>" title="<?php echo esc_attr( $unit['label'] ); ?>" <?php selected( $value, $code ); ?>><?php echo esc_html( $code ); ?></option>
+				<?php endforeach; ?>
+			</select>
+		<?php else : ?>
+			<input type="<?php echo $is_quantity ? 'number' : 'text'; ?>"
+				name="rm_ingredients[<?php echo esc_attr( $index ); ?>][<?php echo esc_attr( $field ); ?>]"
+				data-field="<?php echo esc_attr( $field ); ?>" value="<?php echo esc_attr( (string) $value ); ?>"
+				<?php if ( 'group' === $field ) : ?>autocomplete="off" aria-describedby="rm-ingredient-group-help"<?php endif; ?>
+				<?php if ( 'optional_unit' === $field ) : ?>placeholder="<?php esc_attr_e( 'e.g. cloves', 'recipe-manager-core' ); ?>"<?php endif; ?>
+				<?php if ( $is_quantity ) : ?>min="0" step="any" inputmode="decimal"<?php endif; ?> />
+		<?php endif; ?>
+		<span class="rm-measurement-error" data-field-error="<?php echo esc_attr( $field ); ?>" role="alert" hidden></span>
+	</label>
+	<?php
+}
+
 /**
  * Render one row, also used for the client-side template.
  */
@@ -25,47 +52,40 @@ function render_ingredient_row( $index, $row = array() ) {
 		$row[ $legacy_type . '_quantity' ] = $row['quantity'] ?? '';
 		$row[ $legacy_type . '_unit' ] = $row['unit'];
 	}
-	$row = wp_parse_args( $row, array( 'name' => '', 'mass_quantity' => '', 'mass_unit' => '', 'volume_quantity' => '', 'volume_unit' => '', 'note' => '', 'group' => '' ) );
-	$labels = array(
-		'name'     => __( 'Ingredient name', 'recipe-manager-core' ),
-		'mass_quantity' => __( 'Mass quantity', 'recipe-manager-core' ),
-		'mass_unit' => __( 'Mass unit', 'recipe-manager-core' ),
-		'volume_quantity' => __( 'Volume quantity', 'recipe-manager-core' ),
-		'volume_unit' => __( 'Volume unit', 'recipe-manager-core' ),
-		'note'     => __( 'Preparation note', 'recipe-manager-core' ),
-		'group'    => __( 'Group (optional)', 'recipe-manager-core' ),
+	$row = wp_parse_args( $row, array( 'name' => '', 'mass_quantity' => '', 'mass_unit' => '', 'volume_quantity' => '', 'volume_unit' => '', 'note' => '', 'optional_quantity' => '', 'optional_unit' => '', 'group' => '' ) );
+	$segments = array(
+		'mass' => array( 'label' => __( 'Mass', 'recipe-manager-core' ), 'icon' => 'dashboard' ),
+		'volume' => array( 'label' => __( 'Volume', 'recipe-manager-core' ), 'icon' => 'filter' ),
+		'optional' => array( 'label' => __( 'Optional', 'recipe-manager-core' ), 'icon' => 'leftright' ),
 	);
 	?>
 	<div class="rm-ingredient-row">
 		<h4 class="rm-ingredient-group-heading" data-group-heading hidden></h4>
+		<?php if ( '' !== $row['note'] ) : ?>
+			<input type="hidden" name="rm_ingredients[<?php echo esc_attr( $index ); ?>][note]" data-field="note" value="<?php echo esc_attr( $row['note'] ); ?>" />
+		<?php endif; ?>
 		<div class="rm-ingredient-fields">
-			<?php foreach ( $labels as $field => $label ) : ?>
-				<label>
-					<span><?php echo esc_html( $label ); ?></span>
-					<?php if ( in_array( $field, array( 'mass_unit', 'volume_unit' ), true ) ) : ?>
-						<select name="rm_ingredients[<?php echo esc_attr( $index ); ?>][<?php echo esc_attr( $field ); ?>]" data-field="<?php echo esc_attr( $field ); ?>">
-							<option value=""><?php esc_html_e( 'No unit', 'recipe-manager-core' ); ?></option>
-							<?php foreach ( $units as $code => $unit ) :
-								if ( $unit['type'] !== ( 'mass_unit' === $field ? 'mass' : 'volume' ) ) { continue; } ?>
-								<option value="<?php echo esc_attr( $code ); ?>" <?php selected( $row[ $field ], $code ); ?>><?php echo esc_html( $unit['label'] ); ?></option>
-							<?php endforeach; ?>
-						</select>
-					<?php else : ?>
-						<input type="<?php echo in_array( $field, array( 'mass_quantity', 'volume_quantity' ), true ) ? 'number' : 'text'; ?>"
-							name="rm_ingredients[<?php echo esc_attr( $index ); ?>][<?php echo esc_attr( $field ); ?>]"
-							data-field="<?php echo esc_attr( $field ); ?>"
-							<?php if ( 'group' === $field ) : ?>list="rm-ingredient-groups" aria-describedby="rm-ingredient-group-help"<?php endif; ?>
-							value="<?php echo esc_attr( (string) $row[ $field ] ); ?>"
-							<?php if ( in_array( $field, array( 'mass_quantity', 'volume_quantity' ), true ) ) : ?>min="0" step="any" inputmode="decimal"<?php endif; ?> />
-					<?php endif; ?>
-					<span class="rm-measurement-error" data-field-error="<?php echo esc_attr( $field ); ?>" role="alert" hidden></span>
-				</label>
+			<div class="rm-ingredient-identity">
+				<?php render_ingredient_field( $index, 'name', __( 'Ingredient', 'recipe-manager-core' ), $row['name'], $units ); ?>
+				<?php render_ingredient_field( $index, 'group', __( 'Group (optional)', 'recipe-manager-core' ), $row['group'], $units ); ?>
+			</div>
+			<?php foreach ( $segments as $type => $segment ) : ?>
+				<fieldset class="rm-measurement rm-measurement-<?php echo esc_attr( $type ); ?>">
+					<legend class="screen-reader-text"><?php echo esc_html( $segment['label'] ); ?></legend>
+					<div class="rm-measurement-title" aria-hidden="true"><span class="dashicons dashicons-<?php echo esc_attr( $segment['icon'] ); ?>"></span><?php echo esc_html( $segment['label'] ); ?><?php if ( 'optional' === $type ) : ?><small><?php esc_html_e( '(Alt. unit)', 'recipe-manager-core' ); ?></small><?php endif; ?></div>
+					<div class="rm-measurement-inputs">
+						<?php
+						render_ingredient_field( $index, $type . '_quantity', __( 'Quantity', 'recipe-manager-core' ), $row[ $type . '_quantity' ], $units );
+						render_ingredient_field( $index, $type . '_unit', 'optional' === $type ? __( 'Optional unit name', 'recipe-manager-core' ) : __( 'Unit', 'recipe-manager-core' ), $row[ $type . '_unit' ], $units );
+						?>
+					</div>
+				</fieldset>
 			<?php endforeach; ?>
 		</div>
 		<div class="rm-ingredient-actions">
-			<button type="button" class="button" data-ingredient-action="up"><?php esc_html_e( 'Move up', 'recipe-manager-core' ); ?></button>
-			<button type="button" class="button" data-ingredient-action="down"><?php esc_html_e( 'Move down', 'recipe-manager-core' ); ?></button>
-			<button type="button" class="button" data-ingredient-action="remove"><?php esc_html_e( 'Remove ingredient', 'recipe-manager-core' ); ?></button>
+			<button type="button" class="button" data-ingredient-action="up" aria-label="<?php esc_attr_e( 'Move up', 'recipe-manager-core' ); ?>" title="<?php esc_attr_e( 'Move up', 'recipe-manager-core' ); ?>"><span class="dashicons dashicons-arrow-up-alt2" aria-hidden="true"></span></button>
+			<button type="button" class="button" data-ingredient-action="down" aria-label="<?php esc_attr_e( 'Move down', 'recipe-manager-core' ); ?>" title="<?php esc_attr_e( 'Move down', 'recipe-manager-core' ); ?>"><span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span></button>
+			<button type="button" class="button" data-ingredient-action="remove" aria-label="<?php esc_attr_e( 'Remove ingredient', 'recipe-manager-core' ); ?>" title="<?php esc_attr_e( 'Remove ingredient', 'recipe-manager-core' ); ?>"><span class="dashicons dashicons-trash" aria-hidden="true"></span></button>
 		</div>
 	</div>
 	<?php
@@ -77,15 +97,11 @@ function render_ingredient_box( $post ) {
 	wp_nonce_field( 'rm_save_ingredients', 'rm_ingredients_nonce' );
 	?>
 	<div id="rm-ingredient-editor">
-		<p><?php esc_html_e( 'Each ingredient needs a name and at least one complete measurement: mass or volume. You may provide both as equivalent amounts. Use positive decimals such as 0.5 or 0.25; quantities must be greater than zero. Spoon and cup measures: teaspoon 5 ml, tablespoon 15 ml, cup 250 ml.', 'recipe-manager-core' ); ?></p>
+		<details class="rm-ingredient-help">
+			<summary><?php esc_html_e( 'Ingredient entry help', 'recipe-manager-core' ); ?></summary>
+		<p><?php esc_html_e( 'Each ingredient needs a name and at least one complete measurement: mass, volume, or an optional free-text unit. For example, enter Garlic as the ingredient, 2 as the optional unit quantity, and cloves as the optional unit. You may provide multiple equivalent measurements. Use positive decimals such as 0.5 or 0.25; quantities must be greater than zero. Spoon and cup measures: teaspoon 5 ml, tablespoon 15 ml, cup 250 ml.', 'recipe-manager-core' ); ?></p>
 		<p id="rm-ingredient-group-help"><?php esc_html_e( 'Grouping is optional. Enter any group name, such as Chicken ingredients or Sauce ingredients, and use the same name for related ingredients. Leave it blank for ungrouped ingredients. Move related rows together to show them under one heading.', 'recipe-manager-core' ); ?></p>
-		<datalist id="rm-ingredient-groups">
-			<?php
-			$groups = array_unique( array_filter( array_column( $rows, 'group' ), static function ( $group ) { return '' !== trim( (string) $group ); } ) );
-			foreach ( $groups as $group ) : ?>
-				<option value="<?php echo esc_attr( $group ); ?>"></option>
-			<?php endforeach; ?>
-		</datalist>
+		</details>
 		<noscript><p><?php esc_html_e( 'Enable JavaScript to add, remove, or reorder ingredients. Existing rows can still be edited and saved.', 'recipe-manager-core' ); ?></p></noscript>
 		<div data-ingredient-rows>
 			<?php foreach ( $rows as $index => $row ) { render_ingredient_row( $index, $row ); } ?>
@@ -93,7 +109,7 @@ function render_ingredient_box( $post ) {
 		<button type="button" class="button" data-ingredient-action="add"><?php esc_html_e( 'Add ingredient', 'recipe-manager-core' ); ?></button>
 		<template id="rm-ingredient-template"><?php render_ingredient_row( '__INDEX__' ); ?></template>
 		<p class="screen-reader-text" aria-live="polite" data-ingredient-status></p>
-		<span hidden data-measurement-message><?php esc_html_e( 'Provide at least one complete mass or volume measurement.', 'recipe-manager-core' ); ?></span>
+		<span hidden data-measurement-message><?php esc_html_e( 'Provide at least one complete mass, volume, or optional unit measurement.', 'recipe-manager-core' ); ?></span>
 		<span hidden data-ungrouped-label><?php esc_html_e( 'Ungrouped ingredients', 'recipe-manager-core' ); ?></span>
 		<span hidden data-order-message><?php esc_html_e( 'Ingredient order updated.', 'recipe-manager-core' ); ?></span>
 	</div>

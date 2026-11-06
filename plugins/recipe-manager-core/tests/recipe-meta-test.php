@@ -52,7 +52,7 @@ $metadata['_rm_ingredients'] = array(
 );
 $ingredients = rm_get_recipe_ingredients( 7 );
 expect_same( array( 0, 1, 2 ), array_keys( $ingredients ) );
-expect_same( array( 'name' => 'Flour', 'mass_quantity' => 240.0, 'mass_unit' => 'g', 'volume_quantity' => 2.0, 'volume_unit' => 'cup', 'note' => 'Sifted well', 'group' => 'Dough' ), $ingredients[0] );
+expect_same( array( 'name' => 'Flour', 'mass_quantity' => 240.0, 'mass_unit' => 'g', 'volume_quantity' => 2.0, 'volume_unit' => 'cup', 'optional_quantity' => null, 'optional_unit' => '', 'note' => 'Sifted well', 'group' => 'Dough' ), $ingredients[0] );
 expect_same( 0.5, $ingredients[1]['volume_quantity'] );
 expect_same( null, $ingredients[1]['mass_quantity'] );
 expect_same( '', $ingredients[1]['group'] );

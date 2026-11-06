@@ -8,21 +8,15 @@
 	const add = editor.querySelector('[data-step-action="add"]');
 
 	function refreshGroups() {
-		const names = new Set();
 		let previousGroup = null;
 		Array.from(rows.children).forEach(row => {
 			const group = row.querySelector('[data-step-field="group"]').value.trim();
-			if (group) names.add(group);
 			const heading = row.querySelector('[data-step-group-heading]');
 			heading.textContent = group || editor.querySelector('[data-step-ungrouped-label]').textContent;
 			heading.hidden = group === previousGroup || (!group && previousGroup === null);
 			previousGroup = group;
 		});
-		editor.querySelector('#rm-step-groups').replaceChildren(...Array.from(names, name => {
-			const option = document.createElement('option');
-			option.value = name;
-			return option;
-		}));
+
 	}
 
 	function validate(row) {

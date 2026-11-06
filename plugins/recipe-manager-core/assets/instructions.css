@@ -1,25 +1,80 @@
+#rm-instruction-editor { container-type: inline-size; }
+#rm-instruction-editor .rm-instruction-help { margin-bottom: 16px; }
+#rm-instruction-editor summary { cursor: pointer; color: #2271b1; }
+
 #rm-instruction-editor .rm-step-row {
-	border: 1px solid #c3c4c7;
-	padding: 12px;
+	display: grid;
+	grid-template-columns: 52px minmax(0, 1fr) 220px 36px;
+	gap: 12px;
+	align-items: start;
+	border: 1px solid #dfe3eb;
+	border-radius: 16px;
+	background: #fff;
+	box-shadow: 0 2px 6px rgb(30 41 59 / 5%);
+	padding: 16px;
 	margin-bottom: 12px;
 }
 
-#rm-instruction-editor h4 { margin: 0 0 12px; }
-#rm-instruction-editor label span { display: block; margin-bottom: 4px; font-weight: 600; }
-#rm-instruction-editor textarea { width: 100%; }
-#rm-instruction-editor .rm-step-image,
-#rm-instruction-editor .rm-step-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
-#rm-instruction-editor [data-step-preview] { max-width: 200px; max-height: 160px; object-fit: contain; }
-#rm-instruction-editor [aria-disabled="true"] { opacity: 0.5; cursor: default; }
+#rm-instruction-editor .rm-step-badge {
+	margin: 0;
+	padding: 10px 4px;
+	border-radius: 12px;
+	background: #edf3ff;
+	color: #143f7a;
+	text-align: center;
+	font-size: 11px;
+	font-weight: 600;
+}
+#rm-instruction-editor [data-step-number] { display: block; margin-top: 4px; font-size: 24px; line-height: 1.2; }
+#rm-instruction-editor .rm-step-content { padding: 12px; border-radius: 12px; background: #edf3ff; min-width: 0; }
+#rm-instruction-editor label { display: block; }
+#rm-instruction-editor .rm-step-section-title { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; font-size: 14px; color: #143f7a; font-weight: 600; }
+#rm-instruction-editor .rm-step-section-title small { font-size: 11px; font-weight: 400; }
+#rm-instruction-editor textarea,
+#rm-instruction-editor input[type="text"] {
+	box-sizing: border-box;
+	width: 100%;
+	min-width: 0;
+	margin: 0;
+	border-color: #cbd2df;
+	border-radius: 6px;
+	background: #fff;
+}
+#rm-instruction-editor textarea { min-height: 92px; resize: vertical; }
+#rm-instruction-editor .rm-step-group-field { margin-top: 8px; max-width: 400px; }
+#rm-instruction-editor .rm-step-group-field > span { display: block; margin-bottom: 4px; font-size: 11px; color: #646970; }
+#rm-instruction-editor .rm-step-group-field input { min-height: 30px; font-size: 12px; }
+
+#rm-instruction-editor .rm-step-image { display: flex; flex-direction: column; align-items: stretch; gap: 8px; min-width: 0; padding: 12px; border-radius: 12px; background: #f1f2f6; }
+#rm-instruction-editor .rm-step-image .rm-step-section-title { color: #303b4d; margin-bottom: 0; }
+#rm-instruction-editor [data-step-preview] { width: 100%; height: 92px; border-radius: 6px; object-fit: contain; background: #fff; }
+#rm-instruction-editor .rm-step-image-placeholder { display: flex; align-items: center; justify-content: center; height: 92px; border: 1px dashed #cbd2df; border-radius: 6px; color: #8b95a5; }
+#rm-instruction-editor .rm-step-image-placeholder .dashicons { width: 28px; height: 28px; font-size: 28px; }
+#rm-instruction-editor .rm-step-image:has([data-step-preview]:not([hidden])) .rm-step-image-placeholder { display: none; }
+#rm-instruction-editor .rm-step-image .button { border-color: #cbd2df; border-radius: 6px; background: #fff; font-size: 12px; white-space: normal; }
+#rm-instruction-editor .rm-step-image .button-link-delete { align-self: center; font-size: 12px; }
+
+#rm-instruction-editor .rm-step-actions { display: flex; flex-direction: column; align-self: stretch; justify-content: center; gap: 3px; padding-left: 8px; border-left: 1px solid #e5e7eb; }
+#rm-instruction-editor .rm-step-actions .button { display: flex; align-items: center; justify-content: center; min-height: 30px; min-width: 28px; padding: 2px; border: 0; box-shadow: none; background: transparent; color: #334155; }
+#rm-instruction-editor .rm-step-actions .button:hover { background: #edf0f5; }
+#rm-instruction-editor .rm-step-actions [data-step-action="remove"] { color: #b32d2e; }
+#rm-instruction-editor [aria-disabled="true"] { opacity: .35; cursor: default; }
 #rm-instruction-editor [aria-invalid="true"] { border-color: #d63638; box-shadow: 0 0 0 1px #d63638; }
-#rm-instruction-editor .rm-step-error { color: #b32d2e; margin: 6px 0; }
+#rm-instruction-editor .rm-step-error { color: #b32d2e; margin: 6px 0; font-size: 12px; }
+#rm-instruction-editor .rm-step-group-heading { grid-column: 1 / -1; margin: 0; font-size: 14px; }
 #rm-instruction-editor [hidden] { display: none; }
 
-#rm-instruction-editor .rm-step-group-heading {
-	margin: 0 0 12px;
-	padding-bottom: 8px;
-	border-bottom: 1px solid #c3c4c7;
-	font-size: 14px;
+@container (max-width: 750px) {
+	#rm-instruction-editor .rm-step-row { grid-template-columns: minmax(0, 1fr) 36px; }
+	#rm-instruction-editor .rm-step-badge { grid-column: 1; padding: 6px 10px; text-align: left; }
+	#rm-instruction-editor [data-step-number] { display: inline; margin-left: 4px; font-size: 16px; }
+	#rm-instruction-editor .rm-step-content,
+	#rm-instruction-editor .rm-step-image,
+	#rm-instruction-editor .rm-step-group-heading { grid-column: 1; }
+	#rm-instruction-editor .rm-step-actions { grid-column: 2; grid-row: 1 / span 3; }
+	#rm-instruction-editor .rm-step-row:has(.rm-step-group-heading:not([hidden])) .rm-step-actions { grid-row: 1 / span 4; }
 }
-#rm-instruction-editor .rm-step-group-field { display: block; margin-top: 12px; }
-#rm-instruction-editor .rm-step-group-field input { width: 100%; max-width: 400px; }
+
+@container (max-width: 450px) {
+	#rm-instruction-editor .rm-step-row { padding: 10px; gap: 8px; }
+}

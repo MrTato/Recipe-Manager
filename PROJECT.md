@@ -213,21 +213,25 @@ the volume represented by each supported spoon/cup unit explicitly so
 conversions are consistent.
 
 Store ingredient rows in their authored order as structured recipe post
-metadata (`_rm_ingredients`). Each row contains a free-text name, optional
-preparation notes and group label, and separate `mass_quantity`/`mass_unit`
-and `volume_quantity`/`volume_unit` fields. At least one complete measurement
-is required; both may be supplied as author-provided equivalent amounts.
+metadata (`_rm_ingredients`). Each row contains a free-text name, an optional
+group label, and separate `mass_quantity`/`mass_unit`,
+`volume_quantity`/`volume_unit`, and `optional_quantity`/`optional_unit` fields.
+At least one complete measurement is required; multiple measurements may be
+supplied as author-provided equivalent amounts. Previously saved preparation
+notes are preserved but are no longer edited in this form.
 Each supplied measurement needs a positive decimal quantity and a unit
-from the corresponding mass or volume catalog. Count, informal, and unmeasured
-entries are not accepted by this editor. Entirely blank rows are ignored.
+from the corresponding mass or volume catalog, or a free-text `optional_unit`
+paired with a positive `optional_quantity` (for example, 2 cloves of garlic).
+An optional unit measurement can be the only measurement. Unmeasured entries
+are not accepted by this editor. Entirely blank rows are ignored.
 
 Serving adjustments use each original quantity multiplied by desired servings
 divided by default servings. Recalculate from the original value and round only
 for display.
 
 Ingredients may optionally be organized into groups using a free-text group
-name on each ingredient row. The editor suggests group names already used in
-the recipe and shows a heading when the group changes between adjacent rows.
+name on each ingredient row. The editor shows a heading when the group changes
+between adjacent rows. Group inputs do not display suggestion popups.
 Authors can reorder rows to keep related ingredients together. Blank group
 names remain ungrouped. Group labels are saved with the ingredient rows;
 public recipe group rendering is deferred.

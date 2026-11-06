@@ -25,7 +25,7 @@ function sanitize_ingredient_rows( $rows ) {
 			return new \WP_Error( 'invalid_ingredients' );
 		}
 		$values = array();
-		foreach ( array( 'name', 'mass_quantity', 'mass_unit', 'volume_quantity', 'volume_unit', 'note', 'group' ) as $field ) {
+		foreach ( array( 'name', 'mass_quantity', 'mass_unit', 'volume_quantity', 'volume_unit', 'optional_quantity', 'optional_unit', 'note', 'group' ) as $field ) {
 			$value = $row[ $field ] ?? '';
 			if ( ! is_string( $value ) ) {
 				return new \WP_Error( 'invalid_ingredients' );
@@ -39,14 +39,15 @@ function sanitize_ingredient_rows( $rows ) {
 		if ( '' === $name ) {
 			return new \WP_Error( 'invalid_ingredients' );
 		}
+		$values['optional_unit'] = sanitize_text_field( $values['optional_unit'] );
 		$has_measurement = false;
-		foreach ( array( 'mass', 'volume' ) as $type ) {
+		foreach ( array( 'mass', 'volume', 'optional' ) as $type ) {
 			$quantity = $values[ $type . '_quantity' ];
 			$unit = $values[ $type . '_unit' ];
 			if ( '' === $quantity && '' === $unit ) {
 				continue;
 			}
-			if ( ! isset( $units[ $unit ] ) || $units[ $unit ]['type'] !== $type
+			if ( ( 'optional' === $type ? '' === $unit : ( ! isset( $units[ $unit ] ) || $units[ $unit ]['type'] !== $type ) )
 				|| ! preg_match( '/\A(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)\z/', $quantity ) || ! is_finite( (float) $quantity ) || (float) $quantity <= 0 ) {
 				return new \WP_Error( 'invalid_ingredients' );
 			}
@@ -61,6 +62,8 @@ function sanitize_ingredient_rows( $rows ) {
 			'mass_unit' => $values['mass_unit'],
 			'volume_quantity' => '' === $values['volume_quantity'] ? null : $values['volume_quantity'],
 			'volume_unit' => $values['volume_unit'],
+			'optional_quantity' => '' === $values['optional_quantity'] ? null : $values['optional_quantity'],
+			'optional_unit' => $values['optional_unit'],
 			'note'     => sanitize_text_field( $values['note'] ),
 			'group'    => sanitize_text_field( $values['group'] ),
 		);
@@ -98,7 +101,7 @@ function show_ingredient_save_error() {
 		return;
 	}
 	echo '<div class="notice notice-error"><p>';
-	esc_html_e( 'Ingredients were not saved. Previous ingredient data was kept. Each nonempty row needs a name and at least one complete mass or volume measurement. Each supplied measurement needs a supported unit and a positive decimal quantity. Use 0.5 rather than 1/2. Re-enter your ingredient changes and save again.', 'recipe-manager-core' );
+	esc_html_e( 'Ingredients were not saved. Previous ingredient data was kept. Each nonempty row needs a name and at least one complete mass, volume, or optional unit measurement. Each supplied measurement needs a positive decimal quantity and either a supported mass/volume unit or a free-text optional unit name. Use 0.5 rather than 1/2. Re-enter your ingredient changes and save again.', 'recipe-manager-core' );
 	echo '</p></div>';
 }
 add_action( 'admin_notices', __NAMESPACE__ . '\\show_ingredient_save_error' );
