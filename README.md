@@ -38,3 +38,30 @@ available as implementation progresses.
 
 WordPress core, the database, uploads, and third-party plugins are not tracked.
 Install dependencies separately for each environment.
+
+## Recipe data helpers
+
+With Recipe Manager Core active, templates can call these read-only helpers:
+
+| Function | Return value |
+| --- | --- |
+| `rm_get_recipe_ingredients($recipe_id)` | Ordered array with name, mass/volume quantities and units, note, and group. Quantities are positive floats or `null`; unused units are `''`. Defaults to `[]`. |
+| `rm_get_recipe_steps($recipe_id)` | Ordered array of `text`, `image_id` (integer, or `0` without an image), and `group`. Defaults to `[]`. |
+| `rm_get_recipe_servings($recipe_id)` | Positive integer, defaulting to `1`. |
+| `rm_get_recipe_total_minutes($recipe_id)` | Integer preparation plus cooking time; missing or invalid components count as `0`. |
+
+The helpers work without ACF being active and accept recipe post IDs. Invalid
+IDs return the same safe defaults. Text is plain text; escape it for the output
+context in templates. Invalid collection rows are omitted, invalid measurements
+are treated as absent, and unavailable step images become `0`. Step numbers come
+from the returned array order. Existing single-measurement ingredients are also
+supported.
+
+Serving adjustments should calculate from these original values in memory.
+The helpers never update stored recipe metadata.
+
+Run the standalone data-access checks with:
+
+```sh
+php plugins/recipe-manager-core/tests/recipe-meta-test.php
+```
