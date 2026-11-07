@@ -19,16 +19,16 @@ No paid plugins or premium extensions are required.
    existing local uploads and third-party plugins.
 3. In WordPress administration, install and activate **Advanced Custom Fields**
    (free). Install **Elementor** (free) if you want to edit static pages visually.
-4. Once implemented, activate **Recipe Manager Core** under Plugins and
+4. Activate **Recipe Manager Core** under Plugins and
    **Recipe Manager** under Appearance → Themes.
 5. After activating the core plugin, visit Settings → Permalinks and save
    your permalink settings if recipe URLs need refreshing.
-6. Once recipe editing is implemented, create a recipe, enter its structured
+6. Create a recipe, enter its structured
    fields, set a featured image, and publish it.
 
-**Current status:** planning and initial repository setup. The custom plugin
-and theme directories currently contain placeholders; steps 4–6 become
-available as implementation progresses.
+**Current status:** structured recipe editing and persistence are implemented.
+The custom theme now renders recipe pages with serving scaling, supported unit
+conversions, and a print layout. Archive discovery and filtering remain future work.
 
 ## Repository layout
 
@@ -65,3 +65,32 @@ Run the standalone data-access checks with:
 ```sh
 php plugins/recipe-manager-core/tests/recipe-meta-test.php
 ```
+
+## Recipe theme
+
+Activate **Recipe Manager** under Appearance → Themes to use
+`single-rm_recipe.php`. Set the site title under Settings → General and optionally
+assign a primary navigation menu under Appearance → Menus. The theme uses stored
+recipe data and WordPress media; no example content or images are hard-coded.
+
+Recipe pages render description, servings, preparation/cooking/total time,
+ingredient and instruction groups, step images, notes, categories, and tags.
+Without JavaScript, the original amounts and complete instructions remain readable.
+Controls appear when JavaScript loads. Changing servings recalculates from original
+quantities; Reset restores authored amounts. Mass/volume switching uses only
+supplied alternate amounts, falling back to the available measurement. Unit selectors
+convert within mass or volume using the core plugin registry. Free-text optional
+units scale without conversion. Spoon/cup definitions are metric cooking measures,
+not US customary measures. Printing uses the currently displayed quantities and
+omits navigation, controls, taxonomy links, and photos.
+
+Run the frontend calculation checks without dependencies:
+
+```sh
+node themes/recipe-manager/tests/measurement-test.js
+```
+
+Before release, verify a published recipe at desktop and mobile widths, keyboard
+navigation, JavaScript disabled, and print preview. Include grouped and ungrouped
+ingredients and steps, missing images, multiline notes, and ingredients with only
+one measurement as well as author-supplied equivalents.

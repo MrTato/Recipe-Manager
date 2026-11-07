@@ -234,7 +234,7 @@ name on each ingredient row. The editor shows a heading when the group changes
 between adjacent rows. Group inputs do not display suggestion popups.
 Authors can reorder rows to keep related ingredients together. Blank group
 names remain ungrouped. Group labels are saved with the ingredient rows;
-public recipe group rendering is deferred.
+the public recipe page renders adjacent groups with headings.
 
 Example:
 
