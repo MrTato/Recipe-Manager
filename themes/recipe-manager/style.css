@@ -67,7 +67,7 @@ h2::after { content:""; position:absolute; bottom:0; left:0; width:105%; height:
 .ingredient-actions [data-print] { flex-shrink:0; white-space:nowrap; }
 .button-primary { background:var(--accent); color:white; font-weight:800; border-color:var(--accent); }
 .button-primary:hover { background:var(--accent); color:white; }
-.ingredient-actions .button-reset { display:grid; place-items:center; flex-shrink:0; width:32px; min-height:44px; padding:0; border:0; background:transparent; color:#c34500; font-size:1.7rem; line-height:1; }
+.ingredient-actions .button-reset { display:grid; place-items:center; flex-shrink:0; width:32px; min-height:44px; padding:0; border:0; background:var(--cream); color:#c34500; line-height:1; }
 .ingredient-actions .button-reset:hover { background:var(--cream); }
 .measurement-help { flex-basis:100%; font-size:.75rem; color:var(--muted); max-width:90ch; margin:0; }
 .recipe-body { display:grid; grid-template-columns:minmax(240px,.8fr) minmax(0,1.7fr); gap:48px; margin-top:30px; }

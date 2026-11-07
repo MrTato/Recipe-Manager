@@ -51,7 +51,7 @@ $units = \RecipeManager\Core\get_units();
 			<div class="ingredient-actions" data-controls hidden>
 			<button type="button" class="measurement-cycle" data-measurement-cycle aria-describedby="measurement-help" hidden><?php esc_html_e( 'Measurements:', 'recipe-manager' ); ?> <span data-measurement-label><?php esc_html_e( 'Default', 'recipe-manager' ); ?></span></button>
 				<button type="button" class="button-primary" data-print><?php esc_html_e( 'Print recipe', 'recipe-manager' ); ?></button>
-				<button type="button" class="button-reset" data-reset aria-label="<?php esc_attr_e( 'Reset servings and measurements', 'recipe-manager' ); ?>" title="<?php esc_attr_e( 'Reset servings and measurements', 'recipe-manager' ); ?>"><span aria-hidden="true">↻</span></button>
+				<button type="button" class="button-reset" data-reset aria-label="<?php esc_attr_e( 'Reset servings and measurements', 'recipe-manager' ); ?>" title="<?php esc_attr_e( 'Reset servings and measurements', 'recipe-manager' ); ?>"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5" /><path d="M20 12a8 8 0 1 0-2.34 5.66" /></svg></button>
 			</div>
 			<p id="measurement-help" class="measurement-help" data-measurement-help hidden><?php esc_html_e( 'Click to cycle: Default → Mass → Volume → Optional unit. Unavailable measurements keep their default amount.', 'recipe-manager' ); ?></p>
 			<?php $previous_group = null; foreach ( $ingredients as $row ) :
