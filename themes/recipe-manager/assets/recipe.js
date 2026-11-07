@@ -58,13 +58,13 @@
 			{ transform: 'translate(calc(100% + 40px), -18px) rotate(4deg)', zIndex: 2, offset: .54 },
 			{ transform: 'translate(calc(100% + 40px), -18px) rotate(4deg)', zIndex: -2, offset: .55 },
 			{ transform: 'translate(0, 0) rotate(0)', zIndex: -2 }
-		], { duration: 1000, easing: 'ease-in-out', fill: 'forwards' });
+		], { duration: 650, easing: 'ease-in-out', fill: 'forwards' });
 		const arrival = card.animate([
 			{ transform: 'translate(3px, 4px) rotate(-1deg) scale(.98)' },
 			{ transform: 'translate(-10px, -8px) rotate(-2deg) scale(1.02)', offset: .45 },
 			{ transform: 'translate(-10px, -8px) rotate(-2deg) scale(1.02)', offset: .6 },
 			{ transform: 'translate(0, 0) rotate(0) scale(1)' }
-		], { duration: 1000, easing: 'ease-in-out' });
+		], { duration: 650, easing: 'ease-in-out' });
 		shuffleAnimations = [departure, arrival];
 		departure.onfinish = () => outgoing.remove();
 	}
