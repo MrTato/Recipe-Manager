@@ -31,6 +31,19 @@
 	const modes = ['original', 'mass', 'volume', 'optional'];
 	let selectedMode = 0;
 	const cycle = recipe.querySelector('[data-measurement-cycle]');
+	recipe.querySelectorAll('.ingredient-actions button').forEach(button => {
+		let bounce;
+		button.addEventListener('click', () => {
+			if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !button.animate) return;
+			if (bounce) bounce.cancel();
+			bounce = button.animate([
+				{ transform: 'translateY(0) scale(1)' },
+				{ transform: 'translateY(2px) scale(.96)', offset: .2 },
+				{ transform: 'translateY(-4px) scale(1.02)', offset: .55 },
+				{ transform: 'translateY(0) scale(1)' }
+			], { duration: 280, easing: 'ease-out' });
+		});
+	});
 	const rows = Array.from(recipe.querySelectorAll('[data-ingredient]'), element => ({
 		element, original: JSON.parse(element.dataset.ingredient)
 	}));
