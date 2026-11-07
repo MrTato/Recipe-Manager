@@ -31,6 +31,43 @@
 	const modes = ['original', 'mass', 'volume', 'optional'];
 	let selectedMode = 0;
 	const cycle = recipe.querySelector('[data-measurement-cycle]');
+	const card = recipe.querySelector('[data-ingredient-card]');
+	let shuffleAnimations = [];
+	let outgoingCard;
+	function shuffleCard(change) {
+		shuffleAnimations.forEach(animation => animation.cancel());
+		shuffleAnimations = [];
+		if (outgoingCard) outgoingCard.remove();
+		if (!card || !card.animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			change();
+			return;
+		}
+		const outgoing = card.cloneNode(true);
+		outgoing.removeAttribute('data-ingredient-card');
+		outgoing.removeAttribute('role');
+		outgoing.removeAttribute('tabindex');
+		outgoing.setAttribute('aria-hidden', 'true');
+		outgoing.inert = true;
+		outgoing.classList.add('ingredient-card--outgoing');
+		outgoingCard = outgoing;
+		card.parentElement.append(outgoing);
+		change();
+		const departure = outgoing.animate([
+			{ transform: 'translate(0, 0) rotate(0)', zIndex: 2 },
+			{ transform: 'translate(calc(100% + 40px), -18px) rotate(4deg)', zIndex: 2, offset: .42 },
+			{ transform: 'translate(calc(100% + 40px), -18px) rotate(4deg)', zIndex: 2, offset: .54 },
+			{ transform: 'translate(calc(100% + 40px), -18px) rotate(4deg)', zIndex: -2, offset: .55 },
+			{ transform: 'translate(0, 0) rotate(0)', zIndex: -2 }
+		], { duration: 1000, easing: 'ease-in-out', fill: 'forwards' });
+		const arrival = card.animate([
+			{ transform: 'translate(3px, 4px) rotate(-1deg) scale(.98)' },
+			{ transform: 'translate(-10px, -8px) rotate(-2deg) scale(1.02)', offset: .45 },
+			{ transform: 'translate(-10px, -8px) rotate(-2deg) scale(1.02)', offset: .6 },
+			{ transform: 'translate(0, 0) rotate(0) scale(1)' }
+		], { duration: 1000, easing: 'ease-in-out' });
+		shuffleAnimations = [departure, arrival];
+		departure.onfinish = () => outgoing.remove();
+	}
 	recipe.querySelectorAll('.ingredient-actions button').forEach(button => {
 		let bounce;
 		button.addEventListener('click', () => {
@@ -66,6 +103,7 @@
 		cycle.querySelector('[data-measurement-label]').textContent = currentMode;
 		cycle.title = rmRecipeConfig.nextMeasurement.replace('%s', nextMode);
 		cycle.setAttribute('aria-label', rmRecipeConfig.cycleLabel.replace('%1$s', currentMode).replace('%2$s', nextMode));
+		if (card) card.setAttribute('aria-label', cycle.getAttribute('aria-label'));
 		recipe.querySelector('[data-servings-display]').textContent = formatQuantity(servings.valueAsNumber);
 		recipe.querySelector('[data-servings-decrease]').disabled = servings.valueAsNumber <= 1;
 		recipe.querySelector('[data-servings-increase]').disabled = servings.valueAsNumber >= Number.MAX_SAFE_INTEGER;
@@ -75,9 +113,24 @@
 	cycle.addEventListener('click', () => {
 		if (!servings.reportValidity()) return;
 		selectedMode = (selectedMode + 1) % modes.length;
-		update();
+		shuffleCard(update);
 		recipe.querySelector('[data-status]').textContent = cycle.getAttribute('aria-label');
 	});
+	if (card) {
+		card.setAttribute('role', 'button');
+		card.tabIndex = 0;
+		card.setAttribute('aria-describedby', 'measurement-help');
+		card.setAttribute('aria-label', cycle.getAttribute('aria-label') || cycle.textContent.trim());
+		card.addEventListener('click', () => {
+			if (!window.getSelection()?.toString()) cycle.click();
+		});
+		card.addEventListener('keydown', event => {
+			if (event.key === 'Enter' || event.key === ' ') {
+				event.preventDefault();
+				cycle.click();
+			}
+		});
+	}
 	cycle.hidden = false;
 	recipe.querySelector('[data-measurement-help]').hidden = false;
 
@@ -93,7 +146,7 @@
 	recipe.querySelector('[data-reset]').addEventListener('click', () => {
 		servings.value = originalServings;
 		selectedMode = 0;
-		update();
+		shuffleCard(update);
 	});
 	recipe.querySelector('[data-print]').addEventListener('click', () => {
 		if (!servings.reportValidity()) return;

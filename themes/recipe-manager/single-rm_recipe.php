@@ -54,6 +54,7 @@ $units = \RecipeManager\Core\get_units();
 				<button type="button" class="button-reset" data-reset aria-label="<?php esc_attr_e( 'Reset servings and measurements', 'recipe-manager' ); ?>" title="<?php esc_attr_e( 'Reset servings and measurements', 'recipe-manager' ); ?>"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5" /><path d="M20 12a8 8 0 1 0-2.34 5.66" /></svg></button>
 			</div>
 			<p id="measurement-help" class="measurement-help" data-measurement-help hidden><?php esc_html_e( 'Click to cycle: Default → Mass → Volume → Optional unit. Unavailable measurements keep their default amount.', 'recipe-manager' ); ?></p>
+			<div class="ingredient-deck"><div class="ingredient-card" data-ingredient-card>
 			<?php $previous_group = null; foreach ( $ingredients as $row ) :
 				if ( $row['group'] !== $previous_group ) {
 					if ( null !== $previous_group ) { echo '</ul>'; }
@@ -64,6 +65,7 @@ $units = \RecipeManager\Core\get_units();
 				$type = null !== $row['mass_quantity'] ? 'mass' : ( null !== $row['volume_quantity'] ? 'volume' : 'optional' ); ?>
 				<li data-ingredient="<?php echo esc_attr( wp_json_encode( $row ) ); ?>"><span class="ingredient-copy"><span class="ingredient-amount"><?php echo esc_html( rm_theme_quantity( $row[ $type . '_quantity' ] ) . ' ' . $row[ $type . '_unit' ] ); ?></span> <span><?php echo esc_html( $row['name'] ); ?></span><?php if ( $row['note'] ) : ?><small><?php echo esc_html( $row['note'] ); ?></small><?php endif; ?></span></li>
 			<?php endforeach; if ( null !== $previous_group ) { echo '</ul>'; } ?>
+			</div></div>
 		</section>
 		<section class="recipe-instructions" aria-labelledby="instructions-heading">
 			<h2 id="instructions-heading"><?php esc_html_e( 'Instructions', 'recipe-manager' ); ?></h2>
