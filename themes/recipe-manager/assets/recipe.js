@@ -30,6 +30,7 @@
 	const servings = recipe.querySelector('#recipe-servings');
 	const modes = ['original', 'mass', 'volume', 'optional'];
 	let selectedMode = 0;
+	let displayedServings = originalServings;
 	const cycle = recipe.querySelector('[data-measurement-cycle]');
 	const card = recipe.querySelector('[data-ingredient-card]');
 	let shuffleAnimations = [];
@@ -94,6 +95,7 @@
 		const ratio = servings.valueAsNumber / originalServings;
 		const amounts = rows.map(row => measurement(row.original, modes[selectedMode], {}, ratio, rmRecipeConfig.units));
 		if (amounts.some(amount => !amount)) return;
+		displayedServings = servings.valueAsNumber;
 		rows.forEach((row, index) => {
 			const current = amountText(amounts[index]);
 			row.element.querySelector('.ingredient-amount').textContent = current;
@@ -134,13 +136,17 @@
 	cycle.hidden = false;
 	recipe.querySelector('[data-measurement-help]').hidden = false;
 
-	servings.addEventListener('input', update);
-	servings.addEventListener('change', update);
+	function updateServings() {
+		if (!servings.checkValidity() || !Number.isSafeInteger(servings.valueAsNumber) || servings.valueAsNumber < 1 || servings.valueAsNumber === displayedServings) return;
+		shuffleCard(update);
+	}
+	servings.addEventListener('input', updateServings);
+	servings.addEventListener('change', updateServings);
 	['decrease', 'increase'].forEach(direction => {
 		recipe.querySelector('[data-servings-' + direction + ']').addEventListener('click', () => {
 			if (!servings.reportValidity()) return;
 			if (direction === 'decrease') servings.stepDown(); else servings.stepUp();
-			update();
+			updateServings();
 		});
 	});
 	recipe.querySelector('[data-reset]').addEventListener('click', () => {
