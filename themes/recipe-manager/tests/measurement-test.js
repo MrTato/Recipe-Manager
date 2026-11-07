@@ -25,3 +25,9 @@ assert.equal(calculate(row,'mass',Infinity),null);
 assert.equal(calculate(row,'mass',0),null);
 assert.equal(calculate({},'mass'),null);
 console.log('Measurement checks passed: scaling, alternates, same-type conversions, fallbacks, immutable originals, and invalid results.');
+
+assert.deepEqual(calculate(row, 'optional', 2), {quantity:6,unit:'handfuls'});
+assert.deepEqual(calculate(massOnly, 'volume'), {quantity:240,unit:'g'});
+assert.deepEqual(calculate({...row,optional_quantity:null}, 'optional'), {quantity:240,unit:'g'});
+assert.deepEqual(calculate(optionalOnly, 'mass', 2), {quantity:6,unit:'handfuls'});
+console.log('Global measurement modes passed: optional amounts, missing-mode fallbacks, and scaling.');

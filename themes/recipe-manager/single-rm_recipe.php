@@ -29,7 +29,14 @@ $units = \RecipeManager\Core\get_units();
 			<h1><?php the_title(); ?></h1>
 			<?php if ( '' !== trim( $description ) ) : ?><div class="recipe-description"><?php echo nl2br( esc_html( $description ) ); ?></div><?php endif; ?>
 			<dl class="recipe-facts">
-				<div><dt><?php esc_html_e( 'Servings', 'recipe-manager' ); ?></dt><dd data-servings-display><?php echo esc_html( $servings ); ?></dd></div>
+				<div><dt><label for="recipe-servings"><?php esc_html_e( 'Servings', 'recipe-manager' ); ?></label></dt><dd>
+					<span data-servings-display><?php echo esc_html( $servings ); ?></span>
+					<span class="servings-control" data-servings-control hidden>
+						<button type="button" data-servings-decrease aria-label="<?php esc_attr_e( 'Fewer servings', 'recipe-manager' ); ?>">−</button>
+						<input id="recipe-servings" type="number" min="1" max="9007199254740991" step="1" value="<?php echo esc_attr( $servings ); ?>">
+						<button type="button" data-servings-increase aria-label="<?php esc_attr_e( 'More servings', 'recipe-manager' ); ?>">+</button>
+					</span>
+				</dd></div>
 				<?php foreach ( array( 'rm_prep_minutes' => __( 'Prep', 'recipe-manager' ), 'rm_cook_minutes' => __( 'Cook', 'recipe-manager' ), 'total' => __( 'Total', 'recipe-manager' ) ) as $key => $label ) :
 					$minutes = 'total' === $key ? rm_get_recipe_total_minutes( $id ) : rm_recipe_meta_integer( get_post_meta( $id, $key, true ) ); ?>
 				<div><dt><?php echo esc_html( $label ); ?></dt><dd><?php echo esc_html( sprintf( __( '%s min', 'recipe-manager' ), number_format_i18n( $minutes ) ) ); ?></dd></div>
@@ -37,26 +44,16 @@ $units = \RecipeManager\Core\get_units();
 			</dl>
 		</div>
 	</header>
-	<div class="recipe-toolbar" data-controls hidden>
-		<div><label for="recipe-servings"><?php esc_html_e( 'Servings', 'recipe-manager' ); ?></label>
-		<input id="recipe-servings" type="number" min="1" max="9007199254740991" step="1" value="<?php echo esc_attr( $servings ); ?>"></div>
-		<div><label for="recipe-measurement"><?php esc_html_e( 'Measurements', 'recipe-manager' ); ?></label>
-		<select id="recipe-measurement"><option value="original"><?php esc_html_e( 'As written', 'recipe-manager' ); ?></option><option value="mass"><?php esc_html_e( 'Mass', 'recipe-manager' ); ?></option><option value="volume"><?php esc_html_e( 'Volume', 'recipe-manager' ); ?></option></select></div>
-		<?php foreach ( array( 'mass' => __( 'Mass unit', 'recipe-manager' ), 'volume' => __( 'Volume unit', 'recipe-manager' ) ) as $type => $label ) : ?>
-		<div><label for="recipe-<?php echo esc_attr( $type ); ?>-unit"><?php echo esc_html( $label ); ?></label>
-		<select id="recipe-<?php echo esc_attr( $type ); ?>-unit"><option value="original"><?php esc_html_e( 'As written', 'recipe-manager' ); ?></option>
-		<?php foreach ( $units as $code => $unit ) : if ( $type !== $unit['type'] ) { continue; } ?>
-		<option value="<?php echo esc_attr( $code ); ?>"><?php echo esc_html( $unit['label'] ); ?></option>
-		<?php endforeach; ?></select></div>
-		<?php endforeach; ?>
-		<button type="button" data-reset><?php esc_html_e( 'Reset', 'recipe-manager' ); ?></button>
-		<button type="button" class="button-primary" data-print><?php esc_html_e( 'Print recipe', 'recipe-manager' ); ?></button>
-		<p class="measurement-help"><?php echo esc_html( sprintf( __( 'Mass and volume switch only where the author supplied both. Other ingredients keep their available measurement. Cups = %1$s ml; tbsp = %2$s ml; tsp = %3$s ml.', 'recipe-manager' ), $units['cup']['to_base_factor'], $units['tbsp']['to_base_factor'], $units['tsp']['to_base_factor'] ) ); ?></p>
-	</div>
 	<p class="screen-reader-text" role="status" aria-live="polite" data-status></p>
 	<div class="recipe-body">
 		<section class="recipe-ingredients" aria-labelledby="ingredients-heading">
 			<h2 id="ingredients-heading"><?php esc_html_e( 'Ingredients', 'recipe-manager' ); ?></h2>
+			<div class="ingredient-actions" data-controls hidden>
+			<button type="button" class="measurement-cycle" data-measurement-cycle aria-describedby="measurement-help" hidden><?php esc_html_e( 'Measurements:', 'recipe-manager' ); ?> <span data-measurement-label><?php esc_html_e( 'Default', 'recipe-manager' ); ?></span></button>
+				<button type="button" class="button-primary" data-print><?php esc_html_e( 'Print recipe', 'recipe-manager' ); ?></button>
+				<button type="button" class="button-reset" data-reset aria-label="<?php esc_attr_e( 'Reset servings and measurements', 'recipe-manager' ); ?>" title="<?php esc_attr_e( 'Reset servings and measurements', 'recipe-manager' ); ?>"><span aria-hidden="true">↻</span></button>
+			</div>
+			<p id="measurement-help" class="measurement-help" data-measurement-help hidden><?php esc_html_e( 'Click to cycle: Default → Mass → Volume → Optional unit. Unavailable measurements keep their default amount.', 'recipe-manager' ); ?></p>
 			<?php $previous_group = null; foreach ( $ingredients as $row ) :
 				if ( $row['group'] !== $previous_group ) {
 					if ( null !== $previous_group ) { echo '</ul>'; }
@@ -65,7 +62,7 @@ $units = \RecipeManager\Core\get_units();
 					$previous_group = $row['group'];
 				}
 				$type = null !== $row['mass_quantity'] ? 'mass' : ( null !== $row['volume_quantity'] ? 'volume' : 'optional' ); ?>
-				<li data-ingredient="<?php echo esc_attr( wp_json_encode( $row ) ); ?>"><label class="ingredient-label"><input class="ingredient-check" type="checkbox"><span class="ingredient-copy"><span class="ingredient-amount"><?php echo esc_html( rm_theme_quantity( $row[ $type . '_quantity' ] ) . ' ' . $row[ $type . '_unit' ] ); ?></span> <span><?php echo esc_html( $row['name'] ); ?></span><?php if ( $row['note'] ) : ?><small><?php echo esc_html( $row['note'] ); ?></small><?php endif; ?></span></label></li>
+				<li data-ingredient="<?php echo esc_attr( wp_json_encode( $row ) ); ?>"><span class="ingredient-copy"><span class="ingredient-amount"><?php echo esc_html( rm_theme_quantity( $row[ $type . '_quantity' ] ) . ' ' . $row[ $type . '_unit' ] ); ?></span> <span><?php echo esc_html( $row['name'] ); ?></span><?php if ( $row['note'] ) : ?><small><?php echo esc_html( $row['note'] ); ?></small><?php endif; ?></span></li>
 			<?php endforeach; if ( null !== $previous_group ) { echo '</ul>'; } ?>
 		</section>
 		<section class="recipe-instructions" aria-labelledby="instructions-heading">

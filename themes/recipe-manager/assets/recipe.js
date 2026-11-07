@@ -3,7 +3,7 @@
 	'use strict';
 
 	function measurement(row, preference, targets, ratio, units) {
-		const types = preference === 'volume' ? ['volume', 'mass', 'optional'] : ['mass', 'volume', 'optional'];
+		const types = preference === 'optional' ? ['optional', 'mass', 'volume'] : preference === 'volume' ? ['volume', 'mass', 'optional'] : ['mass', 'volume', 'optional'];
 		const type = types.find(key => Number.isFinite(row[key + '_quantity']) && row[key + '_quantity'] > 0);
 		if (!type) return null;
 		let quantity = row[type + '_quantity'] * ratio;
@@ -28,28 +28,58 @@
 	if (!recipe || typeof rmRecipeConfig === 'undefined') return;
 	const originalServings = Number(recipe.dataset.servings);
 	const servings = recipe.querySelector('#recipe-servings');
-	const preference = recipe.querySelector('#recipe-measurement');
-	const mass = recipe.querySelector('#recipe-mass-unit');
-	const volume = recipe.querySelector('#recipe-volume-unit');
-	const rows = Array.from(recipe.querySelectorAll('[data-ingredient]'), element => ({ element, original: JSON.parse(element.dataset.ingredient) }));
+	const modes = ['original', 'mass', 'volume', 'optional'];
+	let selectedMode = 0;
+	const cycle = recipe.querySelector('[data-measurement-cycle]');
+	const rows = Array.from(recipe.querySelectorAll('[data-ingredient]'), element => ({
+		element, original: JSON.parse(element.dataset.ingredient)
+	}));
+
+	function amountText(amount) {
+		return formatQuantity(amount.quantity) + ' ' + amount.unit;
+	}
 
 	function update() {
 		if (!servings.checkValidity() || !Number.isSafeInteger(servings.valueAsNumber) || servings.valueAsNumber < 1) return;
 		const ratio = servings.valueAsNumber / originalServings;
-		const amounts = rows.map(({ original }) => measurement(original, preference.value, { mass: mass.value, volume: volume.value }, ratio, rmRecipeConfig.units));
+		const amounts = rows.map(row => measurement(row.original, modes[selectedMode], {}, ratio, rmRecipeConfig.units));
 		if (amounts.some(amount => !amount)) return;
-		rows.forEach(({ element }, index) => {
-			const amount = amounts[index];
-			element.querySelector('.ingredient-amount').textContent = formatQuantity(amount.quantity) + ' ' + amount.unit;
+		rows.forEach((row, index) => {
+			const current = amountText(amounts[index]);
+			row.element.querySelector('.ingredient-amount').textContent = current;
 		});
+		const currentMode = rmRecipeConfig.measurementModes[modes[selectedMode]];
+		const nextMode = rmRecipeConfig.measurementModes[modes[(selectedMode + 1) % modes.length]];
+		cycle.querySelector('[data-measurement-label]').textContent = currentMode;
+		cycle.title = rmRecipeConfig.nextMeasurement.replace('%s', nextMode);
+		cycle.setAttribute('aria-label', rmRecipeConfig.cycleLabel.replace('%1$s', currentMode).replace('%2$s', nextMode));
 		recipe.querySelector('[data-servings-display]').textContent = formatQuantity(servings.valueAsNumber);
+		recipe.querySelector('[data-servings-decrease]').disabled = servings.valueAsNumber <= 1;
+		recipe.querySelector('[data-servings-increase]').disabled = servings.valueAsNumber >= Number.MAX_SAFE_INTEGER;
 		recipe.querySelector('[data-status]').textContent = rmRecipeConfig.updated.replace('%s', formatQuantity(servings.valueAsNumber));
 	}
 
-	[servings, preference, mass, volume].forEach(control => control.addEventListener('change', update));
+	cycle.addEventListener('click', () => {
+		if (!servings.reportValidity()) return;
+		selectedMode = (selectedMode + 1) % modes.length;
+		update();
+		recipe.querySelector('[data-status]').textContent = cycle.getAttribute('aria-label');
+	});
+	cycle.hidden = false;
+	recipe.querySelector('[data-measurement-help]').hidden = false;
+
+	servings.addEventListener('input', update);
+	servings.addEventListener('change', update);
+	['decrease', 'increase'].forEach(direction => {
+		recipe.querySelector('[data-servings-' + direction + ']').addEventListener('click', () => {
+			if (!servings.reportValidity()) return;
+			if (direction === 'decrease') servings.stepDown(); else servings.stepUp();
+			update();
+		});
+	});
 	recipe.querySelector('[data-reset]').addEventListener('click', () => {
 		servings.value = originalServings;
-		preference.value = mass.value = volume.value = 'original';
+		selectedMode = 0;
 		update();
 	});
 	recipe.querySelector('[data-print]').addEventListener('click', () => {
@@ -57,5 +87,8 @@
 		update();
 		window.print();
 	});
+	update();
+	recipe.querySelector('[data-servings-display]').hidden = true;
+	recipe.querySelector('[data-servings-control]').hidden = false;
 	recipe.querySelector('[data-controls]').hidden = false;
 })();

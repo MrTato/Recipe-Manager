@@ -76,10 +76,14 @@ recipe data and WordPress media; no example content or images are hard-coded.
 Recipe pages render description, servings, preparation/cooking/total time,
 ingredient and instruction groups, step images, notes, categories, and tags.
 Without JavaScript, the original amounts and complete instructions remain readable.
-Controls appear when JavaScript loads. Changing servings recalculates from original
-quantities; Reset restores authored amounts. Mass/volume switching uses only
-supplied alternate amounts, falling back to the available measurement. Unit selectors
-convert within mass or volume using the core plugin registry. Free-text optional
+Controls appear when JavaScript loads. Servings are edited directly beside Prep, Cook,
+and Total in the recipe summary, using the number field or −/+ buttons. Print and
+Reset sit with the ingredient measurement control. Changing servings recalculates from original
+quantities; Reset restores authored amounts and the default measurement mode.
+A single button below Ingredients cycles Default → Mass → Volume → Optional unit
+for all ingredients. Each mode uses the author's supplied amount in that dimension;
+unavailable measurements fall back to the default (mass, then volume, then optional).
+The button works with keyboard activation, and ingredient rows remain plain text. Free-text optional
 units scale without conversion. Spoon/cup definitions are metric cooking measures,
 not US customary measures. Printing uses the currently displayed quantities and
 omits navigation, controls, taxonomy links, and photos.

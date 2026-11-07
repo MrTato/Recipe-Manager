@@ -16,6 +16,14 @@ add_action( 'wp_enqueue_scripts', function () {
 		wp_enqueue_script( 'recipe-manager-recipe', get_template_directory_uri() . '/assets/recipe.js', array(), filemtime( get_template_directory() . '/assets/recipe.js' ), true );
 		wp_localize_script( 'recipe-manager-recipe', 'rmRecipeConfig', array(
 			'units' => \RecipeManager\Core\get_units(),
+			'measurementModes' => array(
+				'original' => __( 'Default', 'recipe-manager' ),
+				'mass' => __( 'Mass', 'recipe-manager' ),
+				'volume' => __( 'Volume', 'recipe-manager' ),
+				'optional' => __( 'Optional unit', 'recipe-manager' ),
+			),
+			'cycleLabel' => __( 'Measurements: %1$s. Switch to %2$s.', 'recipe-manager' ),
+			'nextMeasurement' => __( 'Next measurement: %s', 'recipe-manager' ),
 			'updated' => __( 'Ingredient quantities updated for %s servings.', 'recipe-manager' ),
 		) );
 	}
