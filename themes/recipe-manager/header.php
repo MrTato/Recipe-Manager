@@ -10,7 +10,7 @@
 <?php wp_body_open(); ?>
 <a class="skip-link" href="#main"><?php esc_html_e( 'Skip to content', 'recipe-manager' ); ?></a>
 <header class="site-header">
-	<a class="site-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>
+	<a class="site-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( "Bayardo's Kitchen", 'recipe-manager' ); ?></a>
 	<nav aria-label="<?php esc_attr_e( 'Primary navigation', 'recipe-manager' ); ?>">
 	<?php if ( has_nav_menu( 'primary' ) ) {
 		wp_nav_menu( array( 'theme_location' => 'primary', 'container' => false, 'depth' => 1 ) );
