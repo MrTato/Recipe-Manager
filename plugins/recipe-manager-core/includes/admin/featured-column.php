@@ -4,6 +4,29 @@ namespace RecipeManager\Core;
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+/** Count selections across active recipe statuses, excluding this recipe. */
+function can_feature_recipe( $post_id ) {
+	$statuses = array_diff( get_post_stati(), array( 'trash', 'auto-draft', 'inherit' ) );
+	$featured = get_posts( array(
+		'post_type' => 'rm_recipe', 'post_status' => array_values( $statuses ),
+		'meta_key' => 'rm_featured', 'meta_value' => '1',
+		'post__not_in' => array( (int) $post_id ), 'fields' => 'ids',
+		'posts_per_page' => 3, 'no_found_rows' => true,
+	) );
+	return count( $featured ) < 3;
+}
+
+function featured_limit_message() {
+	return __( 'No more than three recipes can be featured. Uncheck another recipe first.', 'recipe-manager-core' );
+}
+
+add_filter( 'acf/validate_value/name=rm_featured', function ( $valid, $value ) {
+	if ( true !== $valid || ! $value ) { return $valid; }
+	$id = $_POST['post_ID'] ?? ( $_POST['_acf_post_id'] ?? 0 );
+	$id = is_scalar( $id ) ? absint( $id ) : 0;
+	return can_feature_recipe( $id ) ? $valid : featured_limit_message();
+}, 10, 2 );
+
 add_filter( 'manage_rm_recipe_posts_columns', function ( $columns ) {
 	$result = array();
 	foreach ( $columns as $key => $label ) {
@@ -54,6 +77,9 @@ add_action( 'wp_ajax_rm_set_featured', function () {
 	$value = $_POST['featured'] ?? null;
 	if ( ! in_array( $value, array( '0', '1' ), true ) ) {
 		wp_send_json_error( null, 400 );
+	}
+	if ( '1' === $value && ! can_feature_recipe( $post_id ) ) {
+		wp_send_json_error( array( 'message' => featured_limit_message() ), 409 );
 	}
 	update_post_meta( $post_id, 'rm_featured', $value );
 	if ( $value !== get_post_meta( $post_id, 'rm_featured', true ) ) {

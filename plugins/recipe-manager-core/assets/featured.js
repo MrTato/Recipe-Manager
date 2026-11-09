@@ -6,6 +6,7 @@
 		toggle.addEventListener('change', async () => {
 			const desired = toggle.checked;
 			const status = toggle.nextElementSibling;
+			let failureMessage = rmFeatured.error;
 			toggle.disabled = true;
 			status.textContent = rmFeatured.saving;
 			try {
@@ -20,11 +21,14 @@
 					})
 				});
 				const result = await response.json();
-				if (!response.ok || !result.success) throw new Error('Save failed');
+				if (!response.ok || !result.success) {
+					if (result.data?.message) failureMessage = result.data.message;
+					throw new Error('Save failed');
+				}
 				status.textContent = rmFeatured.saved;
 			} catch (error) {
 				toggle.checked = !desired;
-				status.textContent = rmFeatured.error;
+				status.textContent = ' ' + failureMessage;
 			} finally {
 				toggle.disabled = false;
 			}
