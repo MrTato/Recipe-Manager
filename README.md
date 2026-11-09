@@ -28,7 +28,8 @@ No paid plugins or premium extensions are required.
 
 **Current status:** structured recipe editing and persistence are implemented.
 The custom theme now renders recipe pages with serving scaling, supported unit
-conversions, and a print layout. Archive discovery and filtering remain future work.
+conversions, and a print layout. Recipe archives, category/tag browsing, and
+recipe search share a filtered browsing layout.
 
 ## Repository layout
 
@@ -93,10 +94,10 @@ the hero photo, then save the page. A wide photo with its subject on the right
 works best: the title and description appear on the left over a dark gradient.
 Without a featured image, the hero uses a warm dark background.
 Avoid adding another H1. The template supplies search, up to three
-featured recipes, up to six populated categories, and up to six recent recipes
-excluding those featured above. Mark recipes with **Featured recipe** to curate
+featured recipes, up to six populated categories, and five recent recipes in
+the All Recipes section. Mark recipes with **Featured recipe** to curate
 the featured section. Empty sections are omitted. All recipe links use existing
-WordPress archive, category, and search routes; advanced search remains future work.
+WordPress archive, category, and search routes with the shared browser below.
 
 Verify the homepage with and without published recipes, featured selections,
 images, categories, and the core plugin. Check keyboard access and mobile layout.
@@ -131,3 +132,28 @@ Before release, verify a published recipe at desktop and mobile widths, keyboard
 navigation, JavaScript disabled, and print preview. Include grouped and ungrouped
 ingredients and steps, missing images, multiline notes, and ingredients with only
 one measurement as well as author-supplied equivalents.
+
+## Recipe browser
+
+The recipe archive (`/recipes/`), recipe category/tag archives, and recipe-only
+search share one layout with the existing floral search and compact cards.
+Category checkboxes match any selected category; categories combine with search
+and inclusive minimum/maximum preparation-plus-cooking time. Unknown total times
+are omitted when a time bound is active. Reversed time bounds are normalized.
+Search covers titles, descriptions, ingredient metadata, and category/tag names.
+
+Filters and sorting submit together through Search, Apply filters, or Update
+results. New submissions reset pagination; nine published recipes appear per
+page. Sort choices are newest, oldest, and title. Clear filters returns to the
+unfiltered archive. Category counts reflect the full published collection,
+not the current search. Native category links start with that category selected.
+The filter panel can be collapsed on any screen, and mobile uses one column.
+All essential controls work without JavaScript.
+
+Run integration checks in a local test WordPress installation:
+
+```sh
+wp eval-file wp-content/plugins/recipe-manager-core/tests/browse-integration.php
+```
+
+The check creates temporary recipes and a category and removes them afterward.

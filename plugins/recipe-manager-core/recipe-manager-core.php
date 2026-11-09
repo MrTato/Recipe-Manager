@@ -17,6 +17,7 @@ require_once __DIR__ . '/includes/taxonomies.php';
 require_once __DIR__ . '/includes/acf-fields.php';
 require_once __DIR__ . '/includes/units.php';
 require_once __DIR__ . '/includes/recipe-meta.php';
+require_once __DIR__ . '/includes/recipe-browse.php';
 
 if ( is_admin() ) {
 	require_once __DIR__ . '/includes/admin/category-image.php';
