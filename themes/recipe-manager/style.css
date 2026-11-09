@@ -309,9 +309,6 @@ h2::after { content:""; position:absolute; bottom:0; left:0; width:105%; height:
 .browse-time > div { display:flex; gap:10px; }
 .browse-time label { flex:1; min-width:0; font-size:.8rem; }
 .browse-time input[type='number'] { width:100%; min-width:0; margin-top:6px; padding:6px; font-size:.9rem; }
-.browse-apply,.browse-sort { background:#ff6008; color:white; border:1px solid #ff6008; font-size:.9rem; font-weight:700; }
-.browse-apply:hover,.browse-sort:hover { background:#b63c00; color:white; border-color:#b63c00; }
-.browse-apply { width:100%; }
 .browse-clear { display:block; margin-top:12px; padding:8px; border:1px solid #ecb383; border-radius:8px; text-align:center; text-decoration:none; }
 .browse-results-controls { grid-column:2; grid-row:1; min-width:0; }
 .recipe-browser .home-search { margin:0 0 22px; padding:0; }

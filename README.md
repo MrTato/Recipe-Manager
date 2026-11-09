@@ -142,13 +142,13 @@ and inclusive minimum/maximum preparation-plus-cooking time. Unknown total times
 are omitted when a time bound is active. Reversed time bounds are normalized.
 Search covers titles, descriptions, ingredient metadata, and category/tag names.
 
-Filters and sorting submit together through Search, Apply filters, or Update
-results. New submissions reset pagination; nine published recipes appear per
+Category and sort changes submit automatically; time inputs submit after a
+brief typing pause. Search submits the same combined form. New submissions reset pagination; nine published recipes appear per
 page. Sort choices are newest, oldest, and title. Clear filters returns to the
 unfiltered archive. Category counts reflect the full published collection,
 not the current search. Native category links start with that category selected.
 The filter panel can be collapsed on any screen, and mobile uses one column.
-All essential controls work without JavaScript.
+Without JavaScript, use Search to submit the selected filters and sort order.
 
 Run integration checks in a local test WordPress installation:
 

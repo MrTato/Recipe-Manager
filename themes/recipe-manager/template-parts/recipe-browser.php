@@ -30,7 +30,6 @@ global $wp_query;
 			<div><label><?php esc_html_e( 'Minimum', 'recipe-manager' ); ?><input type="number" name="rm_min" min="0" max="100000" step="1" value="<?php echo esc_attr( $state['min'] ); ?>" placeholder="0"></label>
 			<label><?php esc_html_e( 'Maximum', 'recipe-manager' ); ?><input type="number" name="rm_max" min="0" max="100000" step="1" value="<?php echo esc_attr( $state['max'] ); ?>" placeholder="<?php esc_attr_e( 'Any', 'recipe-manager' ); ?>"></label></div>
 			</fieldset>
-			<button class="browse-apply" type="submit"><?php esc_html_e( 'Apply filters', 'recipe-manager' ); ?></button>
 			<a class="browse-clear" href="<?php echo esc_url( $archive ?: home_url( '/' ) ); ?>"><?php esc_html_e( 'Clear filters', 'recipe-manager' ); ?></a>
 		</details>
 		</aside>
@@ -42,7 +41,6 @@ global $wp_query;
 				<?php foreach ( array( 'newest' => __( 'Newest', 'recipe-manager' ), 'oldest' => __( 'Oldest', 'recipe-manager' ), 'title' => __( 'Title A–Z', 'recipe-manager' ) ) as $key => $label ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $state['sort'], $key ); ?>><?php echo esc_html( $label ); ?></option>
 				<?php endforeach; ?></select></label>
-				<button class="browse-sort" type="submit"><?php esc_html_e( 'Update results', 'recipe-manager' ); ?></button>
 			</div>
 			<?php if ( $state['categories'] || '' !== $state['min'] || '' !== $state['max'] || get_search_query() || is_tax( 'rm_recipe_tag' ) ) : ?>
 			<div class="browse-active" aria-label="<?php esc_attr_e( 'Active filters', 'recipe-manager' ); ?>">

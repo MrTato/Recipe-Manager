@@ -12,6 +12,9 @@ add_action( 'after_setup_theme', function () {
 
 add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_style( 'recipe-manager', get_stylesheet_uri(), array(), filemtime( get_template_directory() . '/style.css' ) );
+	if ( is_post_type_archive( 'rm_recipe' ) || is_tax( array( 'rm_recipe_category', 'rm_recipe_tag' ) ) || ( is_search() && 'rm_recipe' === get_query_var( 'post_type' ) ) ) {
+		wp_enqueue_script( 'recipe-manager-browse', get_template_directory_uri() . '/assets/browse.js', array(), filemtime( get_template_directory() . '/assets/browse.js' ), true );
+	}
 	if ( is_singular( 'rm_recipe' ) && function_exists( 'rm_get_recipe_ingredients' ) ) {
 		wp_enqueue_script( 'recipe-manager-recipe', get_template_directory_uri() . '/assets/recipe.js', array(), filemtime( get_template_directory() . '/assets/recipe.js' ), true );
 		wp_localize_script( 'recipe-manager-recipe', 'rmRecipeConfig', array(
