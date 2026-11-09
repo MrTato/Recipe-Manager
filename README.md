@@ -78,7 +78,11 @@ for review. In that case, publish and assign it manually in Settings → Reading
 Setup runs once, so later Reading settings changes are respected.
 
 Edit the assigned page under Pages to change the introduction. Keep its content
-brief and avoid adding another H1. The template supplies search, up to three
+brief. Choose **Set featured image** in the Home page editor to upload or select
+the hero photo, then save the page. A wide photo with its subject on the right
+works best: the title and description appear on the left over a dark gradient.
+Without a featured image, the hero uses a warm dark background.
+Avoid adding another H1. The template supplies search, up to three
 featured recipes, up to six populated categories, and up to six recent recipes
 excluding those featured above. Mark recipes with **Featured recipe** to curate
 the featured section. Empty sections are omitted. All recipe links use existing

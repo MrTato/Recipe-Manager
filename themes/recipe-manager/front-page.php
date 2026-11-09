@@ -8,6 +8,12 @@ $featured_ids = array();
 get_header(); ?>
 <main id="main" class="site-main homepage">
 	<section class="home-intro" aria-labelledby="home-title">
+		<?php if ( is_page() && has_post_thumbnail( get_queried_object_id() ) ) : ?>
+			<div class="home-intro-image" aria-hidden="true">
+				<?php echo get_the_post_thumbnail( get_queried_object_id(), 'full', array( 'alt' => '', 'loading' => 'eager', 'fetchpriority' => 'high', 'sizes' => '(max-width: 1280px) 100vw, 1216px' ) ); ?>
+			</div>
+		<?php endif; ?>
+		<div class="home-intro-content">
 		<?php if ( is_page() && have_posts() ) : the_post(); ?>
 			<h1 id="home-title"><?php the_title(); ?></h1>
 			<div class="home-intro-copy"><?php the_content(); ?></div>
@@ -16,8 +22,13 @@ get_header(); ?>
 			<p><?php esc_html_e( 'Explore recipes from my kitchen, find something delicious, and make it your own.', 'recipe-manager' ); ?></p>
 		<?php endif; ?>
 		<?php if ( $archive_url ) : ?>
-			<a class="home-button" href="<?php echo esc_url( $archive_url ); ?>"><?php esc_html_e( 'Browse all recipes', 'recipe-manager' ); ?></a>
+			<a class="home-button" href="<?php echo esc_url( $archive_url ); ?>">
+				<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 11h18l-3 9H6l-3-9ZM7 3c-3 3 3 3 0 6m5-7c-3 3 3 3 0 6m5-5c-3 3 3 3 0 6"/></svg>
+				<span><?php esc_html_e( 'Browse all recipes', 'recipe-manager' ); ?></span>
+				<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>
+			</a>
 		<?php endif; ?>
+		</div>
 	</section>
 	<?php if ( $recipes_available ) : ?>
 	<section class="home-search" aria-label="<?php esc_attr_e( 'Recipe search', 'recipe-manager' ); ?>">
