@@ -19,6 +19,7 @@ require_once __DIR__ . '/includes/units.php';
 require_once __DIR__ . '/includes/recipe-meta.php';
 
 if ( is_admin() ) {
+	require_once __DIR__ . '/includes/admin/featured-column.php';
 	require_once __DIR__ . '/includes/admin/ingredient-box.php';
 	require_once __DIR__ . '/includes/admin/instruction-box.php';
 	require_once __DIR__ . '/includes/admin/save-recipe.php';
