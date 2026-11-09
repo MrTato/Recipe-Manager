@@ -41,6 +41,14 @@ Install dependencies separately for each environment.
 
 ## Recipe data helpers
 
+Recipe Categories support an optional image through **Recipes → Recipe
+Categories → Choose image** on both Add and Edit forms. Select or upload an
+image, then save the category. Images must be at most **512 × 512 pixels**;
+both dimensions are checked against the original file on the server. Larger
+images must be resized first. Removing a category image leaves its Media
+Library file intact. This stores the attachment ID in `rm_category_image_id`
+term metadata; homepage category presentation is unchanged.
+
 With Recipe Manager Core active, templates can call these read-only helpers:
 
 | Function | Return value |
