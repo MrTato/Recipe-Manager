@@ -44,6 +44,7 @@ get_header(); ?>
 		</form>
 	</section>
 	<?php
+	get_template_part( 'template-parts/category-cards' );
 	$featured = new WP_Query( array(
 		'post_type' => 'rm_recipe', 'post_status' => 'publish', 'posts_per_page' => 3,
 		'no_found_rows' => true, 'ignore_sticky_posts' => true,
@@ -62,22 +63,6 @@ get_header(); ?>
 	</section>
 	<?php endif;
 	wp_reset_postdata();
-	$categories = taxonomy_exists( 'rm_recipe_category' ) ? get_terms( array(
-		'taxonomy' => 'rm_recipe_category', 'hide_empty' => true,
-		'number' => 6, 'orderby' => 'name', 'order' => 'ASC',
-	) ) : array();
-	if ( ! is_wp_error( $categories ) && $categories ) : ?>
-	<section class="home-section" aria-labelledby="home-categories">
-		<h2 id="home-categories"><?php esc_html_e( 'Browse by category', 'recipe-manager' ); ?></h2>
-		<ul class="home-category-list">
-		<?php foreach ( $categories as $category ) :
-			$term_url = get_term_link( $category );
-			if ( is_wp_error( $term_url ) ) { continue; } ?>
-			<li><a href="<?php echo esc_url( $term_url ); ?>"><?php echo esc_html( $category->name ); ?></a></li>
-		<?php endforeach; ?>
-		</ul>
-	</section>
-	<?php endif;
 	$recent = new WP_Query( array(
 		'post_type' => 'rm_recipe', 'post_status' => 'publish', 'posts_per_page' => 6,
 		'no_found_rows' => true, 'ignore_sticky_posts' => true,

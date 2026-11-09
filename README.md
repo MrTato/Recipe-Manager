@@ -47,7 +47,9 @@ image, then save the category. Images must be at most **512 × 512 pixels**;
 both dimensions are checked against the original file on the server. Larger
 images must be resized first. Removing a category image leaves its Media
 Library file intact. This stores the attachment ID in `rm_category_image_id`
-term metadata; homepage category presentation is unchanged.
+term metadata. The homepage displays up to six populated categories as image
+cards below search. More Categories opens the full populated category list.
+More Categories uses a built-in nine-dot orange icon.
 
 With Recipe Manager Core active, templates can call these read-only helpers:
 
