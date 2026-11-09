@@ -54,7 +54,7 @@ get_header(); ?>
 	if ( $featured->have_posts() ) : ?>
 	<section class="home-section home-featured-section" aria-label="<?php esc_attr_e( 'Featured recipes', 'recipe-manager' ); ?>">
 		<div class="home-featured-background" aria-hidden="true">
-			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/featured-background.webp' ); ?>" alt="" width="1808" height="870" loading="lazy">
+			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/featured-background-brown.webp' ); ?>" alt="" width="1536" height="1024" loading="lazy">
 		</div>
 		<div class="home-recipe-grid">
 		<?php while ( $featured->have_posts() ) : $featured->the_post();
