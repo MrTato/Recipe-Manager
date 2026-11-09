@@ -127,7 +127,7 @@ h2::after { content:""; position:absolute; bottom:0; left:0; width:105%; height:
 .home-button svg { flex-shrink:0; }
 .home-button:hover { background:#b63c00; color:white; }
 /* Warm recipe search, with the label available to assistive technology. */
-.home-search { position:relative; isolation:isolate; margin:32px 0 48px; padding:28px 20px; border-radius:20px; background:transparent; }
+.home-search { position:relative; isolation:isolate; margin:32px auto 48px; padding:28px 20px; border-radius:20px; background:transparent; }
 .home-search::after { content:""; position:absolute; z-index:-1; pointer-events:none; top:0; right:8px; bottom:0; width:min(300px,40%); background:url("assets/search-flowers.webp") right center / contain no-repeat; filter:sepia(.65) saturate(2); }
 .home-search form { display:flex; align-items:center; }
 .home-search-controls { display:flex; align-items:center; gap:14px; flex:1; min-width:0; padding:5px 6px 5px 20px; border:1px solid var(--accent); border-radius:999px; background:white; box-shadow:0 3px 10px #e77b1514; }
