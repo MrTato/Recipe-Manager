@@ -151,8 +151,10 @@ h2::after { content:""; position:absolute; bottom:0; left:0; width:105%; height:
 .home-card-body h3 a { text-decoration:none; }
 .home-card-body p { margin:0 0 24px; font-size:1rem; line-height:1.6; }
 .home-card-body .home-card-description { color:#4c4945; }
-.home-card-body .home-card-time { display:flex; align-items:center; gap:10px; margin:auto 0 0; padding-top:4px; color:var(--ink); font-size:1rem; }
-.home-card-time svg { flex-shrink:0; color:var(--accent); }
+.home-card-times { display:flex; width:100%; margin-top:auto; padding-top:4px; }
+.home-card-body .home-card-time { display:flex; flex:1; min-width:0; align-items:center; gap:8px; margin:0; color:var(--ink); font-size:.9rem; line-height:1.4; }
+.home-card-time + .home-card-time { margin-left:12px; padding-left:12px; border-left:1px solid #e5ddd4; }
+.home-card-time svg { flex-shrink:0; color:#FF6008; stroke:#FF6008; }
 .home-category-cards { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:12px; margin-top:-20px; }
 .home-category-card { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; min-height:132px; height:100%; padding:14px 10px; border:1px solid #f2d1ab; border-radius:18px; background:linear-gradient(135deg,#fff9f0,#fbefdf); box-shadow:0 3px 0 #edd9be60,0 6px 12px #65401b0c; color:#2b160b; text-align:center; text-decoration:none; font-size:1rem; font-weight:700; line-height:1.2; overflow-wrap:anywhere; }
 .home-category-card img { width:80px; height:64px; object-fit:contain; }
