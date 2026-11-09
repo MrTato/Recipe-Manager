@@ -8,6 +8,12 @@ $cook = get_post_meta( get_the_ID(), 'rm_cook_minutes', true );
 $cook_minutes = is_numeric( $cook ) && is_finite( (float) $cook ) && (float) $cook >= 0 ? (int) $cook : null;
 ?>
 <article <?php post_class( 'home-recipe-card' ); ?>>
+	<?php if ( ! empty( $args['featured'] ) ) : ?>
+		<span class="home-card-featured-badge">
+			<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="m2 6 5 4 5-7 5 7 5-4-3 13H5L2 6Z"/></svg>
+			<?php esc_html_e( 'Featured', 'recipe-manager' ); ?>
+		</span>
+	<?php endif; ?>
 	<a class="home-card-image" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
 		<?php if ( has_post_thumbnail() ) :
 			the_post_thumbnail( 'medium_large', array( 'alt' => '', 'loading' => 'lazy' ) );

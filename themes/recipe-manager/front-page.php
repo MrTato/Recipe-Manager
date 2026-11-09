@@ -52,12 +52,14 @@ get_header(); ?>
 		'orderby' => array( 'date' => 'DESC', 'ID' => 'DESC' ),
 	) );
 	if ( $featured->have_posts() ) : ?>
-	<section class="home-section" aria-labelledby="home-featured">
-		<h2 id="home-featured"><?php esc_html_e( 'Featured recipes', 'recipe-manager' ); ?></h2>
+	<section class="home-section home-featured-section" aria-label="<?php esc_attr_e( 'Featured recipes', 'recipe-manager' ); ?>">
+		<div class="home-featured-background" aria-hidden="true">
+			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/featured-background.webp' ); ?>" alt="" width="1808" height="870" loading="lazy">
+		</div>
 		<div class="home-recipe-grid">
 		<?php while ( $featured->have_posts() ) : $featured->the_post();
 			$featured_ids[] = get_the_ID();
-			get_template_part( 'template-parts/recipe-card' );
+			get_template_part( 'template-parts/recipe-card', null, array( 'featured' => true ) );
 		endwhile; ?>
 		</div>
 	</section>
