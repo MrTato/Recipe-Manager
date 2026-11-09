@@ -21,7 +21,7 @@ $cook_minutes = is_numeric( $cook ) && is_finite( (float) $cook ) && (float) $co
 	</a>
 	<div class="home-card-body">
 		<h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-		<?php if ( $description ) : ?><p class="home-card-description"><?php echo esc_html( wp_trim_words( wp_strip_all_tags( $description ), 40 ) ); ?></p><?php endif; ?>
+		<?php if ( $description && empty( $args['compact'] ) ) : ?><p class="home-card-description"><?php echo esc_html( wp_trim_words( wp_strip_all_tags( $description ), 40 ) ); ?></p><?php endif; ?>
 		<?php if ( $minutes > 0 || null !== $cook_minutes ) : ?>
 		<div class="home-card-times">
 		<?php if ( $minutes > 0 ) : ?>

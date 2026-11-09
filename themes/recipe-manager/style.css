@@ -141,6 +141,21 @@ h2::after { content:""; position:absolute; bottom:0; left:0; width:105%; height:
 .home-search button:hover { background:#b63c00; color:white; }
 .home-section { margin-top:48px; }
 .home-section h2 { margin-bottom:28px; }
+.home-all-heading { position:relative; display:flex; flex-direction:column; align-items:center; gap:8px; margin-bottom:40px; text-align:center; }
+.home-all-leaves { color:#FF6008; }
+.home-all-heading h2 { display:flex; align-items:center; justify-content:center; gap:32px; width:100%; margin:0; padding-bottom:24px; font-family:Georgia,"Times New Roman",serif; font-size:clamp(2.5rem,5vw,4.5rem); font-style:normal; text-transform:none; letter-spacing:-.035em; }
+.home-all-heading h2::before { content:""; width:180px; max-width:20%; height:1px; background:#dfbfa5; }
+.home-all-heading h2::after { position:static; content:""; width:180px; max-width:20%; height:1px; background:#dfbfa5; transform:none; clip-path:none; }
+.home-all-heading::after { content:""; width:120px; height:5px; border-radius:999px; background:#FF6008; }
+.home-all-recipes { padding-bottom:24px; }
+.home-all-recipes .home-recipe-grid { row-gap:32px; }
+.home-all-recipes .home-card-times { padding-top:8px; }
+.home-all-link { display:flex; align-items:center; justify-content:center; min-width:0; text-decoration:none; border-radius:26px; }
+.home-all-link img { display:block; width:100%; height:100%; object-fit:contain; border-radius:26px; }
+.home-all-link:hover { filter:brightness(.98); }
+@media (max-width:600px) {
+ .home-all-heading h2 { gap:14px; }
+}
 .home-featured-section { padding:56px 0; }
 .home-featured-section .home-recipe-grid { max-width:1216px; margin-inline:auto; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); }
 .home-card-featured-badge { position:absolute; z-index:1; top:16px; left:14px; display:inline-flex; align-items:center; gap:8px; padding:9px 16px; border-radius:16px 0 16px 0; background:#FF6008; color:white; font-family:Georgia,"Times New Roman",serif; font-weight:700; font-size:1rem; line-height:1.2; box-shadow:0 3px 8px #341b1226; pointer-events:none; }

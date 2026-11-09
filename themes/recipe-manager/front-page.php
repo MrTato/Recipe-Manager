@@ -63,18 +63,25 @@ get_header(); ?>
 	<?php endif;
 	wp_reset_postdata();
 	$recent = new WP_Query( array(
-		'post_type' => 'rm_recipe', 'post_status' => 'publish', 'posts_per_page' => 6,
+		'post_type' => 'rm_recipe', 'post_status' => 'publish', 'posts_per_page' => 5,
 		'no_found_rows' => true, 'ignore_sticky_posts' => true,
-		'post__not_in' => $featured_ids,
 		'orderby' => array( 'date' => 'DESC', 'ID' => 'DESC' ),
 	) );
 	if ( $recent->have_posts() ) : ?>
-	<section class="home-section" aria-labelledby="home-recent">
-		<h2 id="home-recent"><?php esc_html_e( 'Recent recipes', 'recipe-manager' ); ?></h2>
+	<section class="home-section home-all-recipes" aria-labelledby="home-all-title">
+		<header class="home-all-heading">
+			<svg class="home-all-leaves" viewBox="0 0 64 48" width="64" height="48" fill="none" aria-hidden="true" focusable="false"><path d="M31 39C9 40 5 22 4 9c17 0 28 8 27 30Zm4-2C30 17 42 5 60 4c-2 18-9 31-25 33Z" fill="currentColor"/><path d="m14 19 18 22M49 15 32 41" stroke="var(--paper)" stroke-width="1.5"/></svg>
+			<h2 id="home-all-title"><?php esc_html_e( 'All Recipes', 'recipe-manager' ); ?></h2>
+		</header>
 		<div class="home-recipe-grid">
 		<?php while ( $recent->have_posts() ) : $recent->the_post();
-			get_template_part( 'template-parts/recipe-card' );
+			get_template_part( 'template-parts/recipe-card', null, array( 'compact' => true ) );
 		endwhile; ?>
+		<?php if ( $archive_url ) : ?>
+		<a class="home-all-link" href="<?php echo esc_url( $archive_url ); ?>">
+			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/see-all-recipes.webp' ); ?>" alt="<?php esc_attr_e( 'See All Recipes', 'recipe-manager' ); ?>" width="900" height="985" loading="lazy">
+		</a>
+		<?php endif; ?>
 		</div>
 	</section>
 	<?php elseif ( ! $featured_ids ) : ?>
