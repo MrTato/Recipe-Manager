@@ -295,7 +295,7 @@ h2::after { content:""; position:absolute; bottom:0; left:0; width:105%; height:
 .browse-hero > div { max-width:1200px; margin:auto; }
 .browse-hero h1 { margin:0 0 12px; font-family:Georgia,'Times New Roman',serif; font-style:italic; font-size:clamp(2.3rem,4vw,3.2rem); color:#3c2111; }
 .browse-hero p { max-width:74ch; margin:0; font-size:1rem; }
-.browse-container { display:grid; grid-template-columns:230px minmax(0,1fr); column-gap:28px; row-gap:24px; max-width:1264px; margin:24px auto 0; padding:0 32px; }
+.browse-container { display:grid; grid-template-columns:230px minmax(0,1fr); grid-template-rows:max-content 1fr; column-gap:28px; row-gap:12px; max-width:1264px; margin:24px auto 0; padding:0 32px; }
 .browse-layout { display:contents; }
 .browse-sidebar { grid-column:1; grid-row:1 / 3; min-width:0; }
 .browse-filters { padding:22px; border:1px solid #f4d6b6; border-radius:22px; background:linear-gradient(135deg,#fff9f1,#fff3e5); box-shadow:0 4px 12px #54371d0a; font-size:.9rem; }
@@ -321,7 +321,7 @@ h2::after { content:""; position:absolute; bottom:0; left:0; width:105%; height:
 .browse-toolbar select { max-width:160px; font-size:.9rem; border-color:#edc4a2; }
 .browse-active { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
 .browse-active span { padding:4px 10px; background:var(--cream); border-radius:16px; font-size:.8rem; }
-.browse-results { grid-column:2; grid-row:2; min-width:0; }
+.browse-results { grid-column:2; grid-row:2; align-self:start; min-width:0; }
 .browse-results .home-recipe-grid { gap:20px; }
 .browse-results .home-card-body { padding:18px; }
 .browse-results .home-card-body h3 { font-size:1.15rem; }
@@ -340,7 +340,7 @@ h2::after { content:""; position:absolute; bottom:0; left:0; width:105%; height:
  .browse-results .home-recipe-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 @media (max-width:760px) {
- .browse-container { grid-template-columns:minmax(0,1fr); padding-inline:20px; gap:24px; }
+ .browse-container { grid-template-columns:minmax(0,1fr); grid-template-rows:auto; padding-inline:20px; gap:16px; }
  .browse-sidebar,.browse-results-controls,.browse-results { grid-column:1; grid-row:auto; }
  .browse-results-controls { grid-row:1; }
  .browse-sidebar { grid-row:2; }
