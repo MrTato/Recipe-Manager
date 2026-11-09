@@ -68,6 +68,25 @@ php plugins/recipe-manager-core/tests/recipe-meta-test.php
 
 ## Recipe theme
 
+### Public homepage
+
+With Recipe Manager active, the next administrator visit creates a published
+**Home** page and assigns it under Settings → Reading → Homepage. An existing
+static homepage is preserved and supplies the introductory title and content.
+An existing published `/home/` page is reused; an unpublished one is left alone
+for review. In that case, publish and assign it manually in Settings → Reading.
+Setup runs once, so later Reading settings changes are respected.
+
+Edit the assigned page under Pages to change the introduction. Keep its content
+brief and avoid adding another H1. The template supplies search, up to three
+featured recipes, up to six populated categories, and up to six recent recipes
+excluding those featured above. Mark recipes with **Featured recipe** to curate
+the featured section. Empty sections are omitted. All recipe links use existing
+WordPress archive, category, and search routes; advanced search remains future work.
+
+Verify the homepage with and without published recipes, featured selections,
+images, categories, and the core plugin. Check keyboard access and mobile layout.
+
 Activate **Recipe Manager** under Appearance → Themes to use
 `single-rm_recipe.php`. Set the site title under Settings → General and optionally
 assign a primary navigation menu under Appearance → Menus. The theme uses stored

@@ -29,6 +29,33 @@ add_action( 'wp_enqueue_scripts', function () {
 	}
 } );
 
+/** Provision editable homepage copy once, without replacing an existing static front page. */
+add_action( 'admin_init', function () {
+	if ( ! current_user_can( 'manage_options' ) || get_option( 'rm_theme_homepage_setup' ) ) {
+		return;
+	}
+	if ( 'page' === get_option( 'show_on_front' ) && get_option( 'page_on_front' ) ) {
+		update_option( 'rm_theme_homepage_setup', 1 );
+		return;
+	}
+	$home = get_page_by_path( 'home', OBJECT, 'page' );
+	if ( $home && 'publish' !== $home->post_status ) {
+		// Leave existing unpublished content for its author to review.
+		return;
+	}
+	$home_id = $home ? $home->ID : wp_insert_post( array(
+		'post_type' => 'page',
+		'post_status' => 'publish',
+		'post_title' => __( 'Home', 'recipe-manager' ),
+		'post_name' => 'home',
+		'post_content' => '<p>' . esc_html__( 'Explore recipes from my kitchen, find something delicious, and make it your own.', 'recipe-manager' ) . '</p>',
+	), true );
+	if ( is_wp_error( $home_id ) || ! $home_id ) { return; }
+	update_option( 'page_on_front', $home_id );
+	update_option( 'show_on_front', 'page' );
+	update_option( 'rm_theme_homepage_setup', 1 );
+} );
+
 /** Read plain multiline fields without requiring ACF at render time. */
 function rm_theme_text( $id, $key ) {
 	$value = get_post_meta( $id, $key, true );

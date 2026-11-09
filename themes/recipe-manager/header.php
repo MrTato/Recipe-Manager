@@ -15,7 +15,10 @@
 	<?php if ( has_nav_menu( 'primary' ) ) {
 		wp_nav_menu( array( 'theme_location' => 'primary', 'container' => false, 'depth' => 1 ) );
 	} elseif ( post_type_exists( 'rm_recipe' ) ) { ?>
-		<a href="<?php echo esc_url( get_post_type_archive_link( 'rm_recipe' ) ); ?>"><?php esc_html_e( 'Recipes', 'recipe-manager' ); ?></a>
+		<ul>
+			<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"<?php if ( is_front_page() ) { echo ' aria-current="page"'; } ?>><?php esc_html_e( 'Home', 'recipe-manager' ); ?></a></li>
+			<li><a href="<?php echo esc_url( get_post_type_archive_link( 'rm_recipe' ) ); ?>"><?php esc_html_e( 'Recipes', 'recipe-manager' ); ?></a></li>
+		</ul>
 	<?php } ?>
 	</nav>
 </header>
