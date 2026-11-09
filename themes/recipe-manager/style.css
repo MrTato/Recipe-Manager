@@ -150,7 +150,7 @@ h2::after { content:""; position:absolute; bottom:0; left:0; width:105%; height:
 .home-all-recipes { padding-bottom:24px; }
 .home-all-recipes .home-recipe-grid { row-gap:32px; }
 .home-all-recipes .home-card-times { padding-top:8px; }
-.home-all-link { display:flex; align-items:center; justify-content:center; min-width:0; text-decoration:none; border-radius:26px; }
+.home-all-link { display:flex; align-items:center; justify-content:center; min-width:0; text-decoration:none; border-radius:26px; box-shadow:0 3px 12px #29180e14; }
 .home-all-link img { display:block; width:100%; height:100%; object-fit:contain; border-radius:26px; }
 .home-all-link:hover { filter:brightness(.98); }
 @media (max-width:600px) {
