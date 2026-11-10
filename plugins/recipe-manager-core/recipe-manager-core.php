@@ -23,6 +23,7 @@ require_once __DIR__ . '/includes/recipe-browse.php';
 
 if ( is_admin() ) {
 	require_once __DIR__ . '/includes/admin/default-units.php';
+	require_once __DIR__ . '/includes/admin/unit-manager.php';
 	require_once __DIR__ . '/includes/admin/category-image.php';
 	require_once __DIR__ . '/includes/admin/featured-column.php';
 	require_once __DIR__ . '/includes/admin/ingredient-box.php';

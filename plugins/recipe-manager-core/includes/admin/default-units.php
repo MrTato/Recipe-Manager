@@ -6,7 +6,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-function remember_default_units( $rows ) {
+function get_protected_default_units() {
+	return array( 'g', 'kg', 'ml', 'l', 'lb', 'oz', 'tbsp', 'tsp', 'cup', 'handful', 'piece', 'pinch', 'slice' );
+}
+
+function remember_default_units( $rows, $previous_rows = array() ) {
+	$previous_names = array_column( array_filter( $previous_rows, 'is_array' ), 'optional_unit' );
 	$saved = get_option( 'rm_default_unit_names', array() );
 	$names = is_array( $saved ) ? $saved : array();
 	foreach ( $rows as $row ) {
@@ -14,7 +19,7 @@ function remember_default_units( $rows ) {
 			continue;
 		}
 		$name = sanitize_text_field( $row['optional_unit'] );
-		if ( '' !== $name && ! in_array( $name, $names, true ) ) {
+		if ( '' !== $name && ! in_array( $name, $names, true ) && ! in_array( $name, $previous_names, true ) ) {
 			$names[] = $name;
 		}
 	}
@@ -41,14 +46,19 @@ function get_default_unit_suggestions() {
 			update_option( 'rm_default_units_seeded_v1', 1, false );
 		}
 	}
-	$suggestions = array();
-	foreach ( get_units() as $code => $unit ) {
-		$suggestions[ $code ] = $unit['label'];
+	$units = get_units();
+	if ( ! get_option( 'rm_default_unit_catalog_v1' ) ) {
+		$names = get_option( 'rm_default_unit_names', array() );
+		update_option( 'rm_default_unit_names', array_values( array_unique( array_merge( array_keys( $units ), $names ) ) ), false );
+		update_option( 'rm_default_unit_catalog_v1', 1, false );
 	}
+	$suggestions = array();
 	foreach ( get_option( 'rm_default_unit_names', array() ) as $name ) {
-		if ( ! isset( $suggestions[ $name ] ) ) {
-			$suggestions[ $name ] = $name;
-		}
+		$suggestions[ $name ] = $units[ $name ]['label'] ?? $name;
+	}
+	// Protected units remain available even if an older manager deleted them.
+	foreach ( get_protected_default_units() as $code ) {
+		$suggestions[ $code ] = $units[ $code ]['label'];
 	}
 	return $suggestions;
 }

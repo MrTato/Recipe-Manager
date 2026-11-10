@@ -36,3 +36,39 @@ check_units( 1 === $wpdb->reads );
 \RecipeManager\Core\remember_default_units( array() );
 check_units( $updated === \RecipeManager\Core\get_default_unit_suggestions() );
 echo "PASS: built-in units, existing recipe names, custom names, deduplication, persistent suggestions\n";
+
+function add_action( ...$args ) {}
+class WP_Error {
+ public $code;
+ function __construct( $code, $message = '' ) { $this->code = $code; }
+}
+require dirname( __DIR__ ) . '/includes/admin/unit-manager.php';
+check_units( true === \RecipeManager\Core\change_default_unit( 'create', '', 'test scoop' ) );
+check_units( isset( \RecipeManager\Core\get_default_unit_suggestions()['test scoop'] ) );
+check_units( \RecipeManager\Core\change_default_unit( 'create', '', 'test scoop' ) instanceof WP_Error );
+check_units( \RecipeManager\Core\change_default_unit( 'create', '', '   ' ) instanceof WP_Error );
+check_units( \RecipeManager\Core\change_default_unit( 'invalid', '', 'foo' ) instanceof WP_Error );
+check_units( \RecipeManager\Core\change_default_unit( 'update', 'missing', 'foo' ) instanceof WP_Error );
+check_units( \RecipeManager\Core\change_default_unit( 'update', 'test scoop', 'cloves' ) instanceof WP_Error );
+check_units( true === \RecipeManager\Core\change_default_unit( 'update', 'test scoop', 'new scoop' ) );
+check_units( ! isset( \RecipeManager\Core\get_default_unit_suggestions()['test scoop'] ) );
+check_units( isset( \RecipeManager\Core\get_default_unit_suggestions()['new scoop'] ) );
+check_units( true === \RecipeManager\Core\change_default_unit( 'delete', 'new scoop', '' ) );
+foreach ( \RecipeManager\Core\get_protected_default_units() as $code ) {
+ check_units( \RecipeManager\Core\change_default_unit( 'delete', $code, '' ) instanceof WP_Error );
+ check_units( \RecipeManager\Core\change_default_unit( 'update', $code, 'changed' ) instanceof WP_Error );
+ check_units( \RecipeManager\Core\change_default_unit( 'update', 'cloves', $code ) instanceof WP_Error );
+ check_units( isset( \RecipeManager\Core\get_default_unit_suggestions()[$code] ) );
+}
+$options['rm_default_unit_names'] = array_values( array_diff( $options['rm_default_unit_names'], array( 'g' ) ) );
+check_units( isset( \RecipeManager\Core\get_default_unit_suggestions()['g'] ) );
+check_units( ! isset( \RecipeManager\Core\get_default_unit_suggestions()['new scoop'] ) );
+$old_rows = array( array( 'optional_unit' => 'new scoop' ) );
+\RecipeManager\Core\remember_default_units( $old_rows, $old_rows );
+check_units( ! isset( \RecipeManager\Core\get_default_unit_suggestions()['new scoop'] ) );
+\RecipeManager\Core\remember_default_units( $old_rows );
+check_units( isset( \RecipeManager\Core\get_default_unit_suggestions()['new scoop'] ) );
+check_units( true === \RecipeManager\Core\change_default_unit( 'create', '', '123' ) );
+check_units( true === \RecipeManager\Core\change_default_unit( 'update', '123', '456' ) );
+check_units( true === \RecipeManager\Core\change_default_unit( 'delete', '456', '' ) );
+echo "PASS: unit CRUD, duplicates, validation, built-in protection and restoration, deletion persistence, new-entry recreation, numeric names\n";
