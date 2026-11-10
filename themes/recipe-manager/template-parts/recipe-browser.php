@@ -42,12 +42,10 @@ global $wp_query;
 				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $state['sort'], $key ); ?>><?php echo esc_html( $label ); ?></option>
 				<?php endforeach; ?></select></label>
 			</div>
-			<?php if ( '' !== $state['min'] || '' !== $state['max'] || get_search_query() || is_tax( 'rm_recipe_tag' ) ) : ?>
+			<?php if ( get_search_query() || is_tax( 'rm_recipe_tag' ) ) : ?>
 			<div class="browse-active" aria-label="<?php esc_attr_e( 'Active filters', 'recipe-manager' ); ?>">
 				<?php if ( get_search_query() ) : ?><span><?php printf( esc_html__( 'Search: %s', 'recipe-manager' ), esc_html( get_search_query( false ) ) ); ?></span><?php endif; ?>
 				<?php if ( is_tax( 'rm_recipe_tag' ) ) : ?><span><?php single_term_title(); ?></span><?php endif; ?>
-				<?php if ( '' !== $state['min'] ) : ?><span><?php printf( esc_html__( 'At least %s min', 'recipe-manager' ), esc_html( $state['min'] ) ); ?></span><?php endif; ?>
-				<?php if ( '' !== $state['max'] ) : ?><span><?php printf( esc_html__( 'Up to %s min', 'recipe-manager' ), esc_html( $state['max'] ) ); ?></span><?php endif; ?>
 			</div>
 			<?php endif; ?>
 		</div>
