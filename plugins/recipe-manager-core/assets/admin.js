@@ -42,7 +42,7 @@
 				if (quantity.value && (!/^(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)$/.test(quantity.value) || !Number.isFinite(Number(quantity.value)) || Number(quantity.value) <= 0)) {
 					errors[`${type}_quantity`] = 'Enter a positive decimal quantity greater than zero.';
 				}
-				if (!unit.value.trim()) errors[`${type}_unit`] = type === 'optional' ? 'Enter an optional unit name, such as cloves.' : 'Select a unit for this measurement.';
+				if (!unit.value.trim()) errors[`${type}_unit`] = type === 'optional' ? 'Choose or type a Default unit, such as cloves.' : 'Select a unit for this measurement.';
 				if (quantity.value && unit.value.trim() && quantity.validity.valid && !errors[`${type}_quantity`]) complete = true;
 			});
 			if (!complete && !errors.mass_quantity && !errors.volume_quantity && !errors.optional_quantity) {

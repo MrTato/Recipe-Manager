@@ -16,10 +16,13 @@ require_once __DIR__ . '/includes/post-types.php';
 require_once __DIR__ . '/includes/taxonomies.php';
 require_once __DIR__ . '/includes/acf-fields.php';
 require_once __DIR__ . '/includes/units.php';
+require_once __DIR__ . '/includes/mass-migration.php';
+require_once __DIR__ . '/includes/volume-migration.php';
 require_once __DIR__ . '/includes/recipe-meta.php';
 require_once __DIR__ . '/includes/recipe-browse.php';
 
 if ( is_admin() ) {
+	require_once __DIR__ . '/includes/admin/default-units.php';
 	require_once __DIR__ . '/includes/admin/category-image.php';
 	require_once __DIR__ . '/includes/admin/featured-column.php';
 	require_once __DIR__ . '/includes/admin/ingredient-box.php';

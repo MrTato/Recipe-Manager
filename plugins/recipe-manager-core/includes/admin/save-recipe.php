@@ -68,7 +68,7 @@ function sanitize_ingredient_rows( $rows ) {
 			'group'    => sanitize_text_field( $values['group'] ),
 		);
 	}
-	return $clean;
+	return normalize_metric_volume_rows( normalize_metric_mass_rows( $clean ) );
 }
 
 function save_recipe_ingredients( $post_id ) {
@@ -88,6 +88,7 @@ function save_recipe_ingredients( $post_id ) {
 	}
 	// Metadata APIs serialize the array. Slash strings to preserve literal backslashes.
 	update_post_meta( $post_id, '_rm_ingredients', wp_slash( $rows ) );
+	remember_default_units( get_post_meta( $post_id, '_rm_ingredients', true ) ?: array() );
 }
 add_action( 'save_post_rm_recipe', __NAMESPACE__ . '\\save_recipe_ingredients' );
 
