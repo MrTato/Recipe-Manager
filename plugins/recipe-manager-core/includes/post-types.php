@@ -31,6 +31,7 @@ function register_recipe_post_type() {
 				'archives'           => __( 'Recipe Archives', 'recipe-manager-core' ),
 			),
 			'public'       => true,
+			'menu_icon'    => 'dashicons-food',
 			'has_archive'  => 'recipes',
 			'rewrite'      => array(
 				'slug'       => 'recipes',
