@@ -23,7 +23,6 @@ add_action( 'wp_enqueue_scripts', function () {
 				'original' => __( 'Default', 'recipe-manager' ),
 				'mass' => __( 'Mass', 'recipe-manager' ),
 				'volume' => __( 'Volume', 'recipe-manager' ),
-				'optional' => __( 'Optional unit', 'recipe-manager' ),
 			),
 			'cycleLabel' => __( 'Measurements: %1$s. Switch to %2$s.', 'recipe-manager' ),
 			'nextMeasurement' => __( 'Next measurement: %s', 'recipe-manager' ),

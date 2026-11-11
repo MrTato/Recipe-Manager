@@ -3,7 +3,7 @@
 	'use strict';
 
 	function measurement(row, preference, targets, ratio, units) {
-		const types = preference === 'optional' ? ['optional', 'mass', 'volume'] : preference === 'volume' ? ['volume', 'mass', 'optional'] : ['mass', 'volume', 'optional'];
+		const types = preference === 'original' ? ['optional', 'mass', 'volume'] : preference === 'volume' ? ['volume', 'mass', 'optional'] : ['mass', 'volume', 'optional'];
 		const type = types.find(key => Number.isFinite(row[key + '_quantity']) && row[key + '_quantity'] > 0);
 		if (!type) return null;
 		let quantity = row[type + '_quantity'] * ratio;
@@ -28,7 +28,7 @@
 	if (!recipe || typeof rmRecipeConfig === 'undefined') return;
 	const originalServings = Number(recipe.dataset.servings);
 	const servings = recipe.querySelector('#recipe-servings');
-	const modes = ['original', 'mass', 'volume', 'optional'];
+	const modes = ['original', 'mass', 'volume'];
 	let selectedMode = 0;
 	let displayedServings = originalServings;
 	const cycle = recipe.querySelector('[data-measurement-cycle]');

@@ -8,7 +8,7 @@ const units = {
 };
 const row = {mass_quantity:240,mass_unit:'g',volume_quantity:2,volume_unit:'cup',optional_quantity:3,optional_unit:'handfuls'};
 const calculate = (r, pref='original', ratio=1, targets={}) => measurement(r,pref,targets,ratio,units);
-assert.deepEqual(calculate(row), {quantity:240,unit:'g'});
+assert.deepEqual(calculate(row), {quantity:3,unit:'handfuls'});
 assert.deepEqual(calculate(row,'volume',2), {quantity:4,unit:'cup'});
 assert.deepEqual(calculate(row,'mass',2,{mass:'kg'}), {quantity:0.48,unit:'kg'});
 assert.deepEqual(calculate(row,'volume',0.5,{volume:'ml'}), {quantity:250,unit:'ml'});
@@ -20,14 +20,14 @@ const optionalOnly = {...row,mass_quantity:null,volume_quantity:null};
 assert.deepEqual(calculate(optionalOnly,'volume',0.5), {quantity:1.5,unit:'handfuls'});
 assert.deepEqual(calculate({...row,mass_quantity:28.349523125},'mass',1,{mass:'oz'}), {quantity:1,unit:'oz'});
 for(let i=0;i<50;i++) calculate(row,'volume',8/3,{volume:'ml'});
-assert.deepEqual(calculate(row), {quantity:240,unit:'g'}); // No mutation or cumulative rounding.
+assert.deepEqual(calculate(row), {quantity:3,unit:'handfuls'}); // No mutation or cumulative rounding.
 assert.equal(calculate(row,'mass',Infinity),null);
 assert.equal(calculate(row,'mass',0),null);
 assert.equal(calculate({},'mass'),null);
 console.log('Measurement checks passed: scaling, alternates, same-type conversions, fallbacks, immutable originals, and invalid results.');
 
-assert.deepEqual(calculate(row, 'optional', 2), {quantity:6,unit:'handfuls'});
+assert.deepEqual(calculate(row, 'original', 2), {quantity:6,unit:'handfuls'});
 assert.deepEqual(calculate(massOnly, 'volume'), {quantity:240,unit:'g'});
-assert.deepEqual(calculate({...row,optional_quantity:null}, 'optional'), {quantity:240,unit:'g'});
+assert.deepEqual(calculate({...row,optional_quantity:null}, 'original'), {quantity:240,unit:'g'});
 assert.deepEqual(calculate(optionalOnly, 'mass', 2), {quantity:6,unit:'handfuls'});
-console.log('Global measurement modes passed: optional amounts, missing-mode fallbacks, and scaling.');
+console.log('Global measurement modes passed: default amounts, missing-mode fallbacks, and scaling.');
