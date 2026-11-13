@@ -33,7 +33,7 @@ function render_ingredient_field( $index, $field, $label, $value, $units ) {
 				name="rm_ingredients[<?php echo esc_attr( $index ); ?>][<?php echo esc_attr( $field ); ?>]"
 				data-field="<?php echo esc_attr( $field ); ?>" value="<?php echo esc_attr( (string) $value ); ?>"
 				<?php if ( 'group' === $field ) : ?>autocomplete="off" aria-describedby="rm-ingredient-group-help"<?php endif; ?>
-				<?php if ( 'optional_unit' === $field ) : ?>list="rm-default-unit-suggestions" autocomplete="off" placeholder="<?php esc_attr_e( 'Choose or type a unit', 'recipe-manager-core' ); ?>"<?php endif; ?>
+				<?php if ( 'optional_unit' === $field ) : ?>list="rm-default-unit-suggestions" autocomplete="off" placeholder="<?php esc_attr_e( 'Unit (optional)', 'recipe-manager-core' ); ?>"<?php endif; ?>
 				<?php if ( $is_quantity ) : ?>min="0" step="any" inputmode="decimal"<?php endif; ?> />
 		<?php endif; ?>
 		<span class="rm-measurement-error" data-field-error="<?php echo esc_attr( $field ); ?>" role="alert" hidden></span>
@@ -104,7 +104,7 @@ function render_ingredient_box( $post ) {
 		</datalist>
 		<details class="rm-ingredient-help">
 			<summary><?php esc_html_e( 'Ingredient entry help', 'recipe-manager-core' ); ?></summary>
-		<p><?php esc_html_e( 'Each ingredient needs a name and at least one complete measurement: mass, volume, or a Default unit you can choose or type. For example, enter Garlic as the ingredient, 2 as the Default unit quantity, and cloves as the Default unit. Custom unit names are saved as suggestions for all recipes. You may provide multiple equivalent measurements. Use positive decimals such as 0.5 or 0.25; quantities must be greater than zero. Spoon and cup measures: teaspoon 5 ml, tablespoon 15 ml, cup 250 ml.', 'recipe-manager-core' ); ?></p>
+		<p><?php esc_html_e( 'Each ingredient needs a name and at least one complete measurement: mass, volume, or a Default unit you can choose or type. For example, enter Garlic as the ingredient, 2 as the Default unit quantity, and cloves as the Default unit. Leave the Default unit name blank to count the ingredient itself, for example 2 onions. Custom unit names are saved as suggestions for all recipes. You may provide multiple equivalent measurements. Use positive decimals such as 0.5 or 0.25; quantities must be greater than zero. Spoon and cup measures: teaspoon 5 ml, tablespoon 15 ml, cup 250 ml.', 'recipe-manager-core' ); ?></p>
 		<p id="rm-ingredient-group-help"><?php esc_html_e( 'Grouping is optional. Enter any group name, such as Chicken ingredients or Sauce ingredients, and use the same name for related ingredients. Leave it blank for ungrouped ingredients. Move related rows together to show them under one heading.', 'recipe-manager-core' ); ?></p>
 		</details>
 		<noscript><p><?php esc_html_e( 'Enable JavaScript to add, remove, or reorder ingredients. Existing rows can still be edited and saved.', 'recipe-manager-core' ); ?></p></noscript>

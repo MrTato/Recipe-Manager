@@ -222,6 +222,8 @@ notes are preserved but are no longer edited in this form.
 Each supplied measurement needs a positive decimal quantity and a unit
 from the corresponding mass or volume catalog, or a free-text `optional_unit`
 paired with a positive `optional_quantity` (for example, 2 cloves of garlic).
+The Default unit name may be blank when the ingredient itself is counted
+(for example, 2 onions); its positive quantity is still required.
 An optional unit measurement can be the only measurement. Unmeasured entries
 are not accepted by this editor. Entirely blank rows are ignored.
 

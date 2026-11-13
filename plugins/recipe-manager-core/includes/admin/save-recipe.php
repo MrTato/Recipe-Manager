@@ -47,7 +47,7 @@ function sanitize_ingredient_rows( $rows ) {
 			if ( '' === $quantity && '' === $unit ) {
 				continue;
 			}
-			if ( ( 'optional' === $type ? '' === $unit : ( ! isset( $units[ $unit ] ) || $units[ $unit ]['type'] !== $type ) )
+			if ( ( 'optional' !== $type && ( ! isset( $units[ $unit ] ) || $units[ $unit ]['type'] !== $type ) )
 				|| ! preg_match( '/\A(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)\z/', $quantity ) || ! is_finite( (float) $quantity ) || (float) $quantity <= 0 ) {
 				return new \WP_Error( 'invalid_ingredients' );
 			}
@@ -103,7 +103,7 @@ function show_ingredient_save_error() {
 		return;
 	}
 	echo '<div class="notice notice-error"><p>';
-	esc_html_e( 'Ingredients were not saved. Previous ingredient data was kept. Each nonempty row needs a name and at least one complete mass, volume, or optional unit measurement. Each supplied measurement needs a positive decimal quantity and either a supported mass/volume unit or a free-text optional unit name. Use 0.5 rather than 1/2. Re-enter your ingredient changes and save again.', 'recipe-manager-core' );
+	esc_html_e( 'Ingredients were not saved. Previous ingredient data was kept. Each nonempty row needs a name and at least one complete mass, volume, or optional unit measurement. Each supplied measurement needs a positive decimal quantity. Mass and volume require supported units. Leave the Default unit name blank to count the ingredient itself, or enter a unit such as cloves. Use 0.5 rather than 1/2. Re-enter your ingredient changes and save again.', 'recipe-manager-core' );
 	echo '</p></div>';
 }
 add_action( 'admin_notices', __NAMESPACE__ . '\\show_ingredient_save_error' );

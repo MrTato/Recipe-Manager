@@ -86,3 +86,31 @@ $metadata['_rm_steps'] = false;
 expect_same( array(), rm_get_recipe_ingredients( 7 ) );
 expect_same( array(), rm_get_recipe_steps( 7 ) );
 echo "PASS: accessor defaults, normalization, legacy rows, ordering, attachment checks, numeric parsing, read-only behavior\n";
+
+// A blank Default unit counts the ingredient itself, including on save/read round trips.
+function add_action( ...$args ) {}
+class WP_Error {}
+require dirname( __DIR__ ) . '/includes/mass-migration.php';
+require dirname( __DIR__ ) . '/includes/volume-migration.php';
+require dirname( __DIR__ ) . '/includes/admin/save-recipe.php';
+$counted = array( 'name' => 'white onions (cubed)', 'optional_quantity' => '0.5', 'optional_unit' => '  ' );
+$saved = \RecipeManager\Core\sanitize_ingredient_rows( array( $counted ) );
+expect_same( true, is_array( $saved ) );
+expect_same( '', $saved[0]['optional_unit'] );
+$metadata['_rm_ingredients'] = $saved;
+$read = rm_get_recipe_ingredients( 7 );
+expect_same( 0.5, $read[0]['optional_quantity'] );
+expect_same( '', $read[0]['optional_unit'] );
+foreach ( array(
+ array( 'name' => 'Onions' ),
+ array( 'name' => 'Onions', 'optional_quantity' => '0' ),
+ array( 'name' => 'Onions', 'optional_quantity' => '-1' ),
+ array( 'name' => 'Onions', 'optional_quantity' => '1/2' ),
+ array( 'name' => 'Garlic', 'optional_unit' => 'cloves' ),
+ array( 'name' => 'Flour', 'mass_quantity' => '2' ),
+ array( 'name' => 'Milk', 'volume_quantity' => '2' ),
+) as $invalid ) {
+ expect_same( true, \RecipeManager\Core\sanitize_ingredient_rows( array( $invalid ) ) instanceof WP_Error );
+}
+expect_same( array(), \RecipeManager\Core\sanitize_ingredient_rows( array( array() ) ) );
+echo "PASS: unitless Default quantity save/read round trip and measurement validation\n";

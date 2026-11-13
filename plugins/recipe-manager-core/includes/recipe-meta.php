@@ -61,7 +61,7 @@ function rm_recipe_meta_text( $value ) {
  * @return array{0: float|null, 1: string}
  */
 function rm_recipe_meta_measurement( $quantity, $unit, $type, $units ) {
-	if ( ! is_string( $unit ) || ( 'optional' === $type ? '' === $unit : ( ! isset( $units[ $unit ] ) || $units[ $unit ]['type'] !== $type ) )
+	if ( ! is_string( $unit ) || ( 'optional' !== $type && ( ! isset( $units[ $unit ] ) || $units[ $unit ]['type'] !== $type ) )
 		|| ( ! is_string( $quantity ) && ! is_int( $quantity ) && ! is_float( $quantity ) ) ) {
 		return array( null, '' );
 	}

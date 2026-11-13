@@ -19,6 +19,7 @@ add_action( 'wp_enqueue_scripts', function () {
 		wp_enqueue_script( 'recipe-manager-recipe', get_template_directory_uri() . '/assets/recipe.js', array(), filemtime( get_template_directory() . '/assets/recipe.js' ), true );
 		wp_localize_script( 'recipe-manager-recipe', 'rmRecipeConfig', array(
 			'units' => \RecipeManager\Core\get_units(),
+			'ingredientOf' => __( 'of', 'recipe-manager' ),
 			'measurementModes' => array(
 				'original' => __( 'Default', 'recipe-manager' ),
 				'mass' => __( 'Mass', 'recipe-manager' ),

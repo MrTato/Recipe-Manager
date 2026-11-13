@@ -87,7 +87,7 @@
 	}));
 
 	function amountText(amount) {
-		return formatQuantity(amount.quantity) + ' ' + amount.unit;
+		return formatQuantity(amount.quantity) + (amount.unit ? ' ' + amount.unit + ' ' + rmRecipeConfig.ingredientOf : '');
 	}
 
 	function update() {
