@@ -16,13 +16,21 @@
 		return Number.isFinite(quantity) && quantity > 0 ? { quantity, unit } : null;
 	}
 
-	function formatQuantity(quantity) {
+	function formatQuantity(quantity, unit = null) {
+		const language = typeof document === 'undefined' ? undefined : document.documentElement.lang || undefined;
+		// Keep this display-only rule in sync with rm_theme_quantity in PHP.
+		if (unit !== null && !['g', 'kg', 'ml', 'l'].includes(unit.trim().toLowerCase())) {
+			const whole = Math.floor(quantity);
+			const fractions = [[1/8, '⅛'], [1/4, '¼'], [1/3, '⅓'], [3/8, '⅜'], [1/2, '½'], [5/8, '⅝'], [2/3, '⅔'], [3/4, '¾'], [7/8, '⅞']];
+			const match = fractions.find(([fraction]) => Math.abs(quantity - whole - fraction) <= Math.min(0.001, quantity * 0.01));
+			if (match) return (whole > 0 ? new Intl.NumberFormat(language).format(whole) : '') + match[1];
+		}
 		const decimals = quantity < 0.01 ? Math.min(12, Math.max(3, Math.ceil(-Math.log10(quantity)) + 1)) : 2;
-		return new Intl.NumberFormat(document.documentElement.lang || undefined, { maximumFractionDigits: decimals }).format(quantity);
+		return new Intl.NumberFormat(language, { maximumFractionDigits: decimals }).format(quantity);
 	}
 
 	// Keep calculation independently testable without a browser or dependencies.
-	if (typeof module !== 'undefined' && module.exports) module.exports = { measurement };
+	if (typeof module !== 'undefined' && module.exports) module.exports = { measurement, formatQuantity };
 	if (typeof document === 'undefined') return;
 	const recipe = document.querySelector('[data-recipe]');
 	if (!recipe || typeof rmRecipeConfig === 'undefined') return;
@@ -87,7 +95,7 @@
 	}));
 
 	function amountText(amount) {
-		return formatQuantity(amount.quantity) + (amount.unit ? ' ' + amount.unit + ' ' + rmRecipeConfig.ingredientOf : '');
+		return formatQuantity(amount.quantity, amount.unit) + (amount.unit ? ' ' + amount.unit + ' ' + rmRecipeConfig.ingredientOf : '');
 	}
 
 	function update() {

@@ -66,7 +66,17 @@ function rm_theme_text( $id, $key ) {
 }
 
 /** Display sensible precision, retaining very small positive quantities. */
-function rm_theme_quantity( $quantity ) {
+function rm_theme_quantity( $quantity, $unit = null ) {
+	// Match only common fractions within 0.001, with at most 1% error.
+	if ( null !== $unit && ! in_array( strtolower( trim( $unit ) ), array( 'g', 'kg', 'ml', 'l' ), true ) ) {
+		$whole = floor( $quantity );
+		$fractions = array( '⅛' => 1 / 8, '¼' => 1 / 4, '⅓' => 1 / 3, '⅜' => 3 / 8, '½' => 1 / 2, '⅝' => 5 / 8, '⅔' => 2 / 3, '¾' => 3 / 4, '⅞' => 7 / 8 );
+		foreach ( $fractions as $symbol => $fraction ) {
+			if ( abs( $quantity - $whole - $fraction ) <= min( 0.001, $quantity * 0.01 ) ) {
+				return ( $whole > 0 ? (string) $whole : '' ) . $symbol;
+			}
+		}
+	}
 	$decimals = $quantity < 0.01 ? min( 12, max( 3, (int) ceil( -log10( $quantity ) ) + 1 ) ) : 2;
 	return rtrim( rtrim( number_format( $quantity, $decimals, '.', '' ), '0' ), '.' );
 }

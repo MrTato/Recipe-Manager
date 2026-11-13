@@ -1,6 +1,6 @@
 'use strict';
 const assert = require('node:assert/strict');
-const { measurement } = require('../assets/recipe.js');
+const { measurement, formatQuantity } = require('../assets/recipe.js');
 const units = {
  g: {type:'mass',to_base_factor:1}, kg: {type:'mass',to_base_factor:1000},
  oz: {type:'mass',to_base_factor:28.349523125}, ml: {type:'volume',to_base_factor:1},
@@ -31,3 +31,13 @@ assert.deepEqual(calculate(massOnly, 'volume'), {quantity:240,unit:'g'});
 assert.deepEqual(calculate({...row,optional_quantity:null}, 'original'), {quantity:240,unit:'g'});
 assert.deepEqual(calculate(optionalOnly, 'mass', 2), {quantity:6,unit:'handfuls'});
 console.log('Global measurement modes passed: default amounts, missing-mode fallbacks, and scaling.');
+
+for (const [quantity, expected] of [[0.125,'⅛'],[0.25,'¼'],[1/3,'⅓'],[0.375,'⅜'],[0.5,'½'],[0.625,'⅝'],[2/3,'⅔'],[0.75,'¾'],[0.875,'⅞'],[1.5,'1½'],[2,'2'],[0.333,'⅓'],[0.667,'⅔'],[0.3,'0.3'],[0.49,'0.49'],[0.001,'0.001']]) {
+ for (const unit of ['', 'cloves', 'cup', 'tbsp', 'tsp', 'lb']) {
+  assert.equal(formatQuantity(quantity, unit), expected);
+ }
+}
+for (const unit of ['g','kg','ml','l']) assert.equal(formatQuantity(1.5, unit), '1.5');
+assert.equal(formatQuantity(0.5), '0.5'); // Non-ingredient numbers keep decimals.
+assert.equal(formatQuantity(calculate(optionalOnly, 'original', 0.5).quantity, ''), '1½');
+console.log('Quantity formatting passed: common fractions, mixed numbers, scaling, decimal fallbacks, metric units, and small quantities.');

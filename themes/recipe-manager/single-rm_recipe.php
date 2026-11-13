@@ -63,7 +63,7 @@ $units = \RecipeManager\Core\get_units();
 					$previous_group = $row['group'];
 				}
 				$type = null !== $row['optional_quantity'] ? 'optional' : ( null !== $row['mass_quantity'] ? 'mass' : 'volume' ); ?>
-				<li data-ingredient="<?php echo esc_attr( wp_json_encode( $row ) ); ?>"><span class="ingredient-copy"><span class="ingredient-amount"><?php echo esc_html( rm_theme_quantity( $row[ $type . '_quantity' ] ) . ( '' !== $row[ $type . '_unit' ] ? ' ' . $row[ $type . '_unit' ] . ' ' . __( 'of', 'recipe-manager' ) : '' ) ); ?></span> <span><?php echo esc_html( $row['name'] ); ?></span></span></li>
+				<li data-ingredient="<?php echo esc_attr( wp_json_encode( $row ) ); ?>"><span class="ingredient-copy"><span class="ingredient-amount"><?php echo esc_html( rm_theme_quantity( $row[ $type . '_quantity' ], $row[ $type . '_unit' ] ) . ( '' !== $row[ $type . '_unit' ] ? ' ' . $row[ $type . '_unit' ] . ' ' . __( 'of', 'recipe-manager' ) : '' ) ); ?></span> <span class="ingredient-name"><?php echo esc_html( $row['name'] ); ?></span></span></li>
 			<?php endforeach; if ( null !== $previous_group ) { echo '</ul>'; } ?>
 			</div></div>
 		</section>
